@@ -1,14 +1,22 @@
 package couchbase;
 
+import haxe.Json;
+import haxe.io.Bytes;
+import haxe.io.BytesOutput;
 
 import couchbase.CouchbaseConst;
-
+import couchbase.CouchbaseException;
 
 /**
  * A class representing a connection to a Couchbase bucket.
  */
 extern class Couchbase {
 
+    private var sockets:Array;
+    private var hosts:Array;
+    private var user:String, password:String, bucket:String;
+    private var persistent:Bool;
+    private static var port:int = 8091; // default port
 
     /**
      * Constructs a new instance of a Couchbase object.
@@ -24,7 +32,62 @@ extern class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    function new ( hosts:Array<Dynamic>,  user:String,  password:String,  bucket:String,  persistent:Bool );
+    function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
+        this.hosts = new Array(hosts.length);
+
+        this.user = user;
+        this.password = password;
+        this.bucket = bucket;
+        this.persistent = persistent;
+
+        for( i in 0...hosts.length) {
+            var hostinfo = hosts[i].split(':');
+            this.hosts[i] = { ip : (  preg_match('/^(?:\d{1,3}[.]){3}\d{1,3}$/i',hostinfo[0]) ) ? hostinfo[0] : sys.net.Host(hostinfo[0]),
+                              port: ( hostinfo.length < 2) ? Couchbase.port: Std.parseInt(hostinfo[1]) };
+        }
+
+        // open a connection
+        // get the mapping table
+        // close the connection
+        // store the table
+    }
+
+    private openConnection( host:Dynamic ) : sys.net.Sockets {
+        var socket:sys.net.Sockets = new sys.net.Sockets();
+        try {
+            socket.connect( host.ip, host.port );
+            return socket;
+        } catch (Exception e) {
+            trace(e);
+            return null;
+        }
+    }
+
+    private sendCommand( socket:sys.net.Sockets, command:String, key:String, flags:int, data:Dynamic ) {
+        // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
+
+        // <command name> <key> <flags> <exptime> <bytes> [noreply]\r\n
+        result = 
+            command + " " +
+            key + " " +
+            BytesOutpu`t.writeInt16(flags) + " " + // do I need to do this?
+            std.(flags) + " " +
+            BytesOutput.writeString( Json.stringify(data) ) + 
+            "\r\n";
+    }
+
+    private readResponse( socket:sys.net.Sockets ) {
+        // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
+
+        /*
+        - "STORED\r\n"
+        - "NOT_STORED\r\n"
+        - "EXISTS\r\n"
+        - "NOT_FOUND\r\n"
+        */
+        socket.
+
+    }
 
     /**
      * Add a document to the cluster.
@@ -39,7 +102,23 @@ extern class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String;
+    function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String {
+        for( var i in 0..this.hosts.length ) {
+            var host = this.hosts[i];
+            var socket = openConnection( host );
+            if( socket != null ) {
+                var success = sendCommand( socket );
+                if( success != null ) {
+                    var response = readResponse( socket );
+                    socket.close();
+                    // if the socket isn't for the first host, switch them
+                    // we'll need to ask for a new host list
+                    return response;
+                }
+            }
+        }
+        throw CouchbaseException();
+    }
 
     /**
      * Store a document in the cluster.

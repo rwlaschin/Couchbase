@@ -1,0 +1,20 @@
+{
+  "name": "couchbase",
+  "url" :
+      "https://github.com/rwlaschin/HaxeCouch",
+  "license": "GPL",
+  "tags": ["couchbase","memcache"],
+  "description":
+      "Couchbase api implementation",
+  "version": "0.0.0",
+  "releasenote":
+      "Initial release, everything is working
+        correctly",
+  "contributors": ["martamius","rwlaschin"],
+  "dependencies": {
+    "io.Bytes" : "",
+    "Json":"",
+    "nme": "3.5.5"
+    "sys.net.Sockets":"",
+  }
+}
