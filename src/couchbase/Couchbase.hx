@@ -355,7 +355,7 @@ value configured on the server).
      * @return integer the new value upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function increment ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return Math.NaN; }
+    function increment ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return 0; }
 
     /**
      * Decrement a numeric value in the cluster.
@@ -368,7 +368,7 @@ value configured on the server).
      * @return integer the new value upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function decrement ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return Math.NaN; }
+    function decrement ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return 0; }
 
     /**
      * Delete all documents in the bucket.
@@ -450,7 +450,7 @@ value configured on the server).
      * @return integer An error code representing the last error code as
         seen by libcouchbase
      */
-    function getResultCode ( ):Int { return Math.NaN; }
+    function getResultCode ( ):Int { return 0; }
 
     /**
      * Get a textual representation of the last result from the extension
@@ -478,7 +478,7 @@ internals.
               description of the legal options to retrieve.
      * @throws \CouchbaseException if an error occurs (e.g illegal option)
      */
-    function getOption ( option:Int ):Int { return Math.NaN; }
+    function getOption ( option:Int ):Int { return 0; }
 
     /**
      * Get the version numbers of the memcached servers in the cluster.
@@ -501,7 +501,7 @@ internals.
      * @return integer The number of replicas for the bucket
      * @throws \CouchbaseException if an error occurs
      */
-    function getNumReplicas ( ):Int { return Math.NaN; }
+    function getNumReplicas ( ):Int { return 0; }
 
     /**
      * Get the name of the servers in the cluster.
@@ -560,7 +560,7 @@ internals.
      *
      * @return integer The currently used timeout specified in usec
      */
-    function getTimeout ( ):Int { return Math.NaN; }
+    function getTimeout ( ):Int { return 0; }
 
     /**
      * Specify an operation timeout.
