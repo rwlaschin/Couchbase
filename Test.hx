@@ -40,6 +40,7 @@ class Test{
 			// command list: add, set, get, delete
 			//               replace, cas, gets(for cas value)
 			con = new CouchbaseSocket("localhost",11211);
+/*
 			// just a string
 			con.send('add','mynewstring','This is the data I\'m storing');
 			var resp = con.read();
@@ -56,11 +57,11 @@ class Test{
 			con.send('set','mynewstring1','This is the data I\'m storing');
 			var resp = con.read();
 			trace( Std.string(resp) );
-
+*/
 			con.send('get','mynewstring');
 			var resp = con.read();
 			trace( Std.string(resp) );
-
+/*
 			con.send('get','notexisting');
 			var resp = con.read();
 			trace( Std.string(resp) );
@@ -76,7 +77,7 @@ class Test{
 			con.send('delete','notexisting');
 			var resp = con.read();
 			trace( Std.string(resp) );
-
+*/
 		} catch ( e:Dynamic ) {
 			trace( Std.string(e) );
 		}

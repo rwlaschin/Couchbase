@@ -46,16 +46,18 @@ class ProtocolHandler {
     }
 
     public function read(): Void {
-       // RESPONSE\r\n
+        // RESPONSE\r\n
         // VALUE <key> <cas> <length>\r\n<payload>\r\nEND
         state = "TYPE";
         var notdone:Bool = true;
         while( notdone ) {
-            trace( 'State - ' + state );
             switch( state ) {
-                case "TYPE": this.readType(); break;
-                case "VALUE": this.readValue(); break;
-                default: notdone = false; break;
+                case "TYPE": 
+                    this.readType(); 
+                case "VALUE": 
+                    this.readValue(); 
+                default: 
+                    notdone = false; 
             }
         }
     }
