@@ -57,6 +57,8 @@ class MemcacheSocket {
         return Std.string(data);
     }
 
+    // http://docs.couchbase.com/couchbase-devguide-2.0/#performing-basic-telnet-operations
+
     public function send( command:String,
                            key:String, data:Dynamic, expire:Int = 0,
                            flags:Int = 0, cas:Null<Int> = null, noreply:Bool=false ):Void {
@@ -66,10 +68,12 @@ class MemcacheSocket {
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
             if( cas == null ) { cas = 0; }
 
-            var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
             var encoded:String = this.encode(data);
-            byter.writeString( encoded );
-            var data:Bytes = byter.getBytes();
+            /*
+                var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+                byter.writeString( encoded );
+                var data:Bytes = byter.getBytes();
+            */
 
             var message:String = "";
             message += command + " ";
@@ -83,8 +87,8 @@ class MemcacheSocket {
             trace(message + " " + encoded );
 
             // TODO: Add failure handling/retries
-            socket.output.writeString( message );
-            socket.output.writeFullBytes( data, 0, data.length );
+            socket.output.writeString( message + "\r\n" );
+            socket.output.writeString( encode );
             socket.output.writeString( "\r\n" );
             socket.output.flush();
         } catch (e:Dynamic) {
@@ -102,9 +106,8 @@ class MemcacheSocket {
             while( readByte != 0 && readByte != 0x0A ) {
                 readByte = socket.input.readByte();
                 trace("Byte - " + Std.string(readByte) );
-                message += String.fromCharCode(readByte);
                 if( readByte != 0x20 && readByte != 0x0D && readByte != 0x0A && readByte != 0 ) {
-                    continue;
+                    message += String.fromCharCode(readByte);
                 }
                 trace("Read so far - " + Std.string(message) );
                 var type:String = message;
@@ -115,13 +118,11 @@ class MemcacheSocket {
                         break;
                     case "ERROR": 
                         message = ""; // remove and keep processing
-                        return type;
                     case "NOT_STORED": case "NOT_FOUND":
                         message = "";
                         return "Failed - " + type;
                     case "STORED": case "EXISTS": case "TOUCHED":
                         message = "";
-                        return type;
                 }
             }
         } catch (e:Dynamic) {
