@@ -1,12 +1,9 @@
 package couchbase;
 
-class CouchbaseConst{
 
-////////////////////////////////////////////////////////
-//                                                    //
-//            The following error codes exist         //
-//                                                    //
-////////////////////////////////////////////////////////
+
+
+class CouchbaseConst {
 
 /**
  * Everything is OK.
