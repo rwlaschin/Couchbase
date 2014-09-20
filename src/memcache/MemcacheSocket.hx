@@ -99,7 +99,7 @@ class MemcacheSocket {
             // TODO: Add failure handling/retries
             var message = "";
             var readByte : Int = -1;
-            while( readByte != 0 ) {
+            while( readByte != 0 && readByte != 0x0A ) {
                 readByte = socket.input.readByte();
                 trace("Byte - " + Std.string(readByte) );
                 message += String.fromCharCode(readByte);
@@ -110,7 +110,7 @@ class MemcacheSocket {
                 var type:String = message;
                 switch(type) {
                     default: 
-                    case " ": case "\r" : case "\n":
+                    case " ":
                         message = ""; // remove and keep processing
                         break;
                     case "ERROR": 
