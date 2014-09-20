@@ -72,7 +72,7 @@ class Couchbase {
      * @throws \CouchbaseException if an error occurs
      */
     function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String {
-        for( i in 0...this.hosts.length ) {
+        /*for( i in 0...this.hosts.length ) {
             var host = this.hosts[i];
             var socket = openConnection( host );
             if( socket != null ) {
@@ -83,8 +83,9 @@ class Couchbase {
                 // we'll need to ask for a new host list
                 return response;
             }
-        }
+        }*/
         throw "CouchbaseException()";
+        return "";
     }
 
     /**
