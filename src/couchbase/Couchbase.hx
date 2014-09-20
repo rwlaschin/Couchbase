@@ -1,12 +1,10 @@
 package couchbase;
 
-import haxe.Json;
-import haxe.io.Bytes;
-import haxe.io.BytesOutput;
-import sys.net.Socket;
-import Math;
-
 import couchbase.CouchbaseConst;
+import couchbase.CouchbaseSocket;
+
+import haxe.Json;
+import Math;
 
 /**
  * A class representing a connection to a Couchbase bucket.
@@ -19,7 +17,6 @@ class Couchbase {
     private var password:String;
     private var bucket:String;
     private var persistent:Bool;
-    private var byter:BytesOutput;
     static inline var port:Int = 8091; // default port
 
     /**
@@ -38,7 +35,6 @@ class Couchbase {
      */
     public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
         this.hosts = new Array();
-        this.byter = new BytesOutput();
 
         this.user = user;
         this.password = password;

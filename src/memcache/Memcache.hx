@@ -1,21 +1,17 @@
 
 package memcache;
 
-import memcache.MemcacheConnection;
+import memcache.MemcacheSocket;
 
-import haxe.Json;
-import haxe.io.Bytes;
-import haxe.io.BytesOutput;
 import haxe.Utf8;
-import sys.net.Socket;
 import Math;
 
 class Memcache
 {
-    private var connections:Array<MemcacheConnection>;
+    private var connections:Array<MemcacheSocket>;
 
     // Overload this for a better indexing algo
-    private function idToIndex( id: String) : Int {
+    private function idToIndex( id: String ) : Int {
         var key:Int = 0;
         for( i in 0...id.length ) {
             key += haxe.Utf8.charCodeAt(id,i);
@@ -40,12 +36,20 @@ class Memcache
     public function new ( hosts:Array<String> ){
         this.connections = new Array();
         for( i in 0...hosts.length) {
-            this.connections.push( new MemcacheConnection() );
+            var values = hosts[i].split(":");
+            this.connections.push( new MemcacheSocket( 
+                                   values[0],
+                                   ( values.length >= 2 ? Std.parseInt(values[1]) : null ) ) );
         }
     }
 
-    private function do( cmd, id, flags, document ){
-
+    private function _do( cmd, id, flags, document
+        // prolly need to pass in a handler
+     ){
+        var hostIndex = idToIndex(id);
+        var connection = connections[hostIndex];
+        connection.send( cmd, id, flags, document );
+        return connection.read();
     }
 
     /**
@@ -62,10 +66,7 @@ class Memcache
      * @throws \CouchbaseException if an error occurs
      */
     function add ( id:String, document:Dynamic, expiry:Int ):String {
-        var hostIndex = idToIndex(id);
-        var connection = connections[hostIndex];
-        connection.send( 'add', id, 0, document );
-        return connection.read( socket );
+        return _do( 'add', id, 0, document );
     }
 
     /**
@@ -83,10 +84,7 @@ class Memcache
      * @throws \CouchbaseException if an error occurs
      */
     function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { 
-        var hostIndex = idToIndex(id);
-        var connection = connections[hostIndex];
-        connection.send( 'set', id, 0, document );
-        return connection.read( socket );
+        return _do( 'set', id, 0, document );
     }
 
     /**
@@ -171,7 +169,9 @@ class Memcache
      * @return object The document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function get ( id:String,  callback:Void->Void,  cas:String ):Dynamic { return {}; }
+    function get ( id:String,  callback:Void->Void,  cas:String ):Dynamic { 
+        return {};
+     }
 
     /**
      * Retrieve multiple documents from the cluster.
@@ -550,8 +550,5 @@ internals.
      * @throws \CouchbaseException if an error occurs
      */
     function listDesignDocs ( ):String { return ""; }
-
-}
-
 
 }
