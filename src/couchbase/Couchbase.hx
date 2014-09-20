@@ -7,7 +7,6 @@ import sys.net.Socket;
 import Math;
 
 import couchbase.CouchbaseConst;
-import couchbase.CouchbaseException;
 
 /**
  * A class representing a connection to a Couchbase bucket.
