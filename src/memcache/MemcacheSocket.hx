@@ -140,6 +140,7 @@ class MemcacheSocket {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
         try {
+
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
             if( cas == null ) { cas = 0; }
 
@@ -151,13 +152,19 @@ class MemcacheSocket {
             */
 
             var message:String = "";
-            message += command + " ";
-            message += key + " ";
-            message += flags + " "; // this can be used to communicate the storage type
-            message += expire + " ";
-            message += encoded.length + " ";
-            message += cas + " ";
-            message += ( noreply  ? "noreply " : "" );
+            switch( cmd ) {
+                case "delete":
+                    message += command;
+                    data = '';
+                default:
+                    message += command + " ";
+                    message += key + " ";
+                    message += flags + " "; // this can be used to communicate the storage type
+                    message += expire + " ";
+                    message += encoded.length + " ";
+                    message += cas + " ";
+                    message += ( noreply  ? "noreply " : "" );
+            }
 
             trace(message + " " + encoded);
 
@@ -188,9 +195,7 @@ class MemcacheSocket {
             if( end != "END" ) { 
                 message.push( end );
             }
-trace("4 - ");
         }
-trace("5 - ");
         return message;
     }
 }
