@@ -48,7 +48,7 @@ class Couchbase {
 
         for( i in 0...hosts.length) {
             var hostinfo = hosts[i].split(':');
-            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : new sys.net.Host(hostinfo[0]),
+            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : (new sys.net.Host(hostinfo[0])).toString(),
                               port: hostinfo.length < 2 ? Couchbase.port : Std.parseInt(hostinfo[1]) };
         }
 
@@ -84,7 +84,7 @@ class Couchbase {
         socket.write( message );
     }
 
-    private function readResponse( socket:sys.net.Socket ):Void {
+    private function readResponse( socket:sys.net.Socket ):String {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
         /*
@@ -94,7 +94,7 @@ class Couchbase {
         - "NOT_FOUND\r\n"
         */
         // socket.
-
+        return "NOT_STORED";
     }
 
     /**
@@ -115,17 +115,15 @@ class Couchbase {
             var host = this.hosts[i];
             var socket = openConnection( host );
             if( socket != null ) {
-                var success = sendCommand( socket );
-                if( success != null ) {
-                    var response = readResponse( socket );
-                    socket.close();
-                    // if the socket isn't for the first host, switch them
-                    // we'll need to ask for a new host list
-                    return response;
-                }
+                sendCommand( socket, 'add', id, 0, document );
+                var response = readResponse( socket );
+                socket.close();
+                // if the socket isn't for the first host, switch them
+                // we'll need to ask for a new host list
+                return response;
             }
         }
-        throw new CouchbaseException();
+        throw "CouchbaseException()";
     }
 
     /**
@@ -142,7 +140,7 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String;
+    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Store multiple documents in the cluster.
@@ -156,7 +154,7 @@ class Couchbase {
      * @return boolean true if success
      * @throws \CouchbaseException if an error occurs
      */
-    function setMulti ( documents:Array<Dynamic>,  expiry:Int,  persist_to:Int,  replicate_to:Int ):Bool;
+    function setMulti ( documents:Array<Dynamic>,  expiry:Int,  persist_to:Int,  replicate_to:Int ):Bool { return false; }
 
     /**
      * Replace a document in the cluster.
