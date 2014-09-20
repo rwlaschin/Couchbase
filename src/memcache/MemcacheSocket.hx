@@ -51,6 +51,7 @@ class ProtocolHandler {
         state = "TYPE";
         var notdone:Bool = true;
         while( notdone ) {
+            trace( 'State - ' + state );
             switch( state ) {
                 case "TYPE": this.readType(); break;
                 case "VALUE": this.readValue(); break;
