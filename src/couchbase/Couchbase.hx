@@ -37,7 +37,7 @@ class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
+    public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
         this.hosts = new Array();
         this.byter = new BytesOutput();
 
@@ -237,7 +237,7 @@ class Couchbase {
      * @return array an array containing the documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int ):Array<Dynamic> { return {}; }
+    function getMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int ):Array<Dynamic> { return []; }
 
     /**
      * Retrieve a replica of a document from the cluster.
@@ -275,7 +275,7 @@ value configured on the server).
      * @return array an array containint the requested documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndLockMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int,  expiry:Int ):Array<Dynamic> { return {}; }
+    function getAndLockMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int,  expiry:Int ):Array<Dynamic> { return []; }
 
     /**
      * Retrieve a document from the cluster and update its time to live.
@@ -297,7 +297,7 @@ value configured on the server).
      * @return array an array containing the requested documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndTouchMulti ( ids:Array<Dynamic>,  expiry:Int,  cas:Array<Dynamic> ):Array<Dynamic> { return {}; }
+    function getAndTouchMulti ( ids:Array<Dynamic>,  expiry:Int,  cas:Array<Dynamic> ):Array<Dynamic> { return []; }
 
     /**
      * Unlock a previously locked document.
@@ -398,7 +398,7 @@ value configured on the server).
               or NULL if there are no more documents.
      * @throws \CouchbaseException if an error occurs
      */
-    function fetch ( ):Array<Dynamic> { return {}; }
+    function fetch ( ):Array<Dynamic> { return []; }
 
     /**
      * Fetch the one of the received documents requested from getDelayed.
@@ -407,7 +407,7 @@ value configured on the server).
               or NULL if there are no more documents.
      * @throws \CouchbaseException if an error occurs
      */
-    function fetchAll ( ):Array<Dynamic> { return {}; }
+    function fetchAll ( ):Array<Dynamic> { return []; }
 
     /**
      * Execute a view request.
@@ -421,7 +421,7 @@ value configured on the server).
               or an array containing an error message
      * @throws \CouchbaseException if an error occurs
      */
-    function view ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):Array<Dynamic> { return {}; }
+    function view ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):Array<Dynamic> { return []; }
 
     /**
      * Generate a view request.
@@ -442,7 +442,7 @@ value configured on the server).
      * @return array an array containing all "key" =&amp;gt; "value" pairs upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function getStats ( ):Array<Dynamic> { return {}; }
+    function getStats ( ):Array<Dynamic> { return []; }
 
     /**
      * Get the last result code from the extension internals.
@@ -486,7 +486,7 @@ internals.
      * @return array an array containing the memcached version on each node
      * @throws \CouchbaseException if an error occurs
      */
-    function getVersion ( ):Array<Dynamic> { return {}; }
+    function getVersion ( ):Array<Dynamic> { return []; }
 
     /**
      * Retrieve the version number of the client.
@@ -509,7 +509,7 @@ internals.
      * @return array an array containing all of the servers in the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function getServers ( ):Array<Dynamic> { return {}; }
+    function getServers ( ):Array<Dynamic> { return []; }
 
     /**
      * Get information about a key in the cluster.
@@ -531,7 +531,7 @@ internals.
      * @return array with the keys with true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function observeMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return {}; }
+    function observeMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return []; }
 
     /**
      * Wait for a document to reach a certain state.
@@ -553,7 +553,7 @@ internals.
      * @return array with the keys with true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function keyDurabilityMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return {}; }
+    function keyDurabilityMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return []; }
 
     /**
      * Retrieve the current operation timeout.
