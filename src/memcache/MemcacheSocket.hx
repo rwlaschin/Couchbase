@@ -80,15 +80,15 @@ class MemcacheSocket {
             message += key + " ";
             message += flags + " "; // this can be used to communicate the storage type
             message += expire + " ";
-            message += data.length + " ";
+            message += encoded.length + " ";
             message += cas + " ";
             message += ( noreply  ? "noreply " : "" );
 
-            trace(message + " " + encoded );
+            trace(message + " " + encoded);
 
             // TODO: Add failure handling/retries
             socket.output.writeString( message + "\r\n" );
-            socket.output.writeString( encode );
+            socket.output.writeString( encoded );
             socket.output.writeString( "\r\n" );
             socket.output.flush();
         } catch (e:Dynamic) {
