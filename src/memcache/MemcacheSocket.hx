@@ -2,6 +2,7 @@
 package memcache;
 
 import sys.net.Socket;
+import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
 class Host {
@@ -67,7 +68,8 @@ class MemcacheSocket {
 
             var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
             var encoded:String = this.encode(data);
-            var data = encoded;
+            byter.writeString( encoded );
+            var data:Bytes = byter.getBytes();
 
             var message:String = "";
             message += command + " ";
@@ -81,9 +83,9 @@ class MemcacheSocket {
             trace(message + " " + encoded );
 
             // TODO: Add failure handling/retries
-            socket.write( message );
-            socket.write( data );
-            socket.write( "\r\n" );
+            socket.output.writeString( message );
+            socket.output.writeFullBytes( data, 0, data.length );
+            socket.output.writeString( "\r\n" );
         } catch (e:Dynamic) {
             trace(Std.string(e));
         }
