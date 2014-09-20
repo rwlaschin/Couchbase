@@ -11,7 +11,7 @@ import couchbase.CouchbaseException;
 /**
  * A class representing a connection to a Couchbase bucket.
  */
-extern class Couchbase {
+class Couchbase {
 
     private var sockets:Array<sys.net.Socket>;
     private var hosts:Array<Dynamic>;

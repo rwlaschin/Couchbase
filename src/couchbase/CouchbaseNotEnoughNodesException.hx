@@ -4,7 +4,7 @@ package couchbase;
 particular operation.  Generally occurs due to invalid durability
 requirements
  */
-extern class CouchbaseNotEnoughNodesException extends CouchbaseException {
+class CouchbaseNotEnoughNodesException extends CouchbaseException {
 
 
 }

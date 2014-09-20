@@ -2,7 +2,7 @@ package couchbase;
 /**
  * A class to wrap the management of a Couchbase cluster.
  */
-extern class CouchbaseClusterManager {
+class CouchbaseClusterManager {
 
 
     /**
