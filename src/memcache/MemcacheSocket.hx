@@ -150,14 +150,14 @@ class MemcacheSocket {
                 byter.writeString( encoded );
                 var data:Bytes = byter.getBytes();
             */
+            message += command + " ";
 
             var message:String = "";
             switch( command ) {
                 case "delete":
-                    message += command;
+                    message += key;
                     data = '';
                 default:
-                    message += command + " ";
                     message += key + " ";
                     message += flags + " "; // this can be used to communicate the storage type
                     message += expire + " ";
