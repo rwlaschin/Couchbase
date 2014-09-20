@@ -19,7 +19,7 @@ class Couchbase {
     private var password:String;
     private var bucket:String;
     private var persistent:Bool;
-    static inline var port:Int = 8091; // default port
+    private static inline var port:Int = 8091; // default port
 
     /**
      * Constructs a new instance of a Couchbase object.
@@ -35,14 +35,14 @@ class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
+     public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
         this.hosts = new Array(hosts.length);
 
         this.user = user;
         this.password = password;
         this.bucket = bucket;
         this.persistent = persistent;
-        var regMatch:EReg = ~/(?:\d{1,3}[.]){3}\d{1,3}$/i;
+        var regMatch:EReg = ~/(?:\d{1,3}[.]){3}\d{1,3}$/;
 
         for( i in 0...hosts.length) {
             var hostinfo = hosts[i].split(':');
