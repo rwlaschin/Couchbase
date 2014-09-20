@@ -79,7 +79,7 @@ class Test{
 				},
 				{ key : "mynewstring",
 				  value : "This is the data I'm storing", 
-				  result : ["NOT_STORED","NOT_STORED","This is the data I'm storing","DELETED"], 
+				  result : ["NOT_STORED","STORED","This is the data I'm storing","DELETED"], 
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
 				}
 			];
