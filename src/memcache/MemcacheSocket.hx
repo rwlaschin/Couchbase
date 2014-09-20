@@ -150,9 +150,7 @@ class MemcacheSocket {
                 byter.writeString( encoded );
                 var data:Bytes = byter.getBytes();
             */
-            message += command + " ";
-
-            var message:String = "";
+            var message:String = command + " ";
             switch( command ) {
                 case "delete":
                     message += key;
