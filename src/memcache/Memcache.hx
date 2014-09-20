@@ -1,30 +1,30 @@
-package couchbase;
+
+package memcache;
+
+import memcache.MemcacheConnection;
 
 import haxe.Json;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
+import haxe.Utf8;
 import sys.net.Socket;
 import Math;
 
-import couchbase.CouchbaseConst;
-import couchbase.CouchbaseException;
+class Memcache
+{
+    private var connections:Array<MemcacheConnection>;
 
-/**
- * A class representing a connection to a Couchbase bucket.
- */
-class Couchbase {
-
-    private var sockets:Array<sys.net.Socket>;
-    private var hosts:Array<Dynamic>;
-    private var user:String;
-    private var password:String;
-    private var bucket:String;
-    private var persistent:Bool;
-    private var byter:BytesOutput;
-    static inline var port:Int = 8091; // default port
+    // Overload this for a better indexing algo
+    private function idToIndex( id: String) : Int {
+        var key:Int = 0;
+        for( i in 0...id.length ) {
+            key += haxe.Utf8.charCodeAt(id,i);
+        }
+        return key % connections.length;
+    }
 
     /**
-     * Constructs a new instance of a Couchbase object.
+     * Constructs a new instance of a Memcache object.
      *
      * @param array An array of hostnames[:port] where the
 <pre><code>                Couchbase cluster is running. The port number is
@@ -37,26 +37,15 @@ class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
-        this.hosts = new Array();
-        this.byter = new BytesOutput();
-
-        this.user = user;
-        this.password = password;
-        this.bucket = bucket;
-        this.persistent = persistent;
-        var regMatch:EReg = ~/(?:\d{1,3}[.]){3}\d{1,3}$/;
-
+    public function new ( hosts:Array<String> ){
+        this.connections = new Array();
         for( i in 0...hosts.length) {
-            var hostinfo = hosts[i].split(':');
-            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : (new sys.net.Host(hostinfo[0])).toString(),
-                              port: hostinfo.length < 2 ? Couchbase.port : Std.parseInt(hostinfo[1]) };
+            this.connections.push( new MemcacheConnection() );
         }
+    }
 
-        // open a connection
-        // get the mapping table
-        // close the connection
-        // store the table
+    private function do( cmd, id, flags, document ){
+
     }
 
     /**
@@ -72,20 +61,11 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String {
-        for( i in 0...this.hosts.length ) {
-            var host = this.hosts[i];
-            var socket = openConnection( host );
-            if( socket != null ) {
-                sendCommand( socket, 'add', id, 0, document );
-                var response = readResponse( socket );
-                socket.close();
-                // if the socket isn't for the first host, switch them
-                // we'll need to ask for a new host list
-                return response;
-            }
-        }
-        throw "CouchbaseException()";
+    function add ( id:String, document:Dynamic, expiry:Int ):String {
+        var hostIndex = idToIndex(id);
+        var connection = connections[hostIndex];
+        connection.send( 'add', id, 0, document );
+        return connection.read( socket );
     }
 
     /**
@@ -102,7 +82,12 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
+    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { 
+        var hostIndex = idToIndex(id);
+        var connection = connections[hostIndex];
+        connection.send( 'set', id, 0, document );
+        return connection.read( socket );
+    }
 
     /**
      * Store multiple documents in the cluster.
@@ -565,5 +550,8 @@ internals.
      * @throws \CouchbaseException if an error occurs
      */
     function listDesignDocs ( ):String { return ""; }
+
+}
+
 
 }
