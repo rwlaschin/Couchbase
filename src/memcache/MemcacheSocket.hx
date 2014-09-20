@@ -178,4 +178,16 @@ class MemcacheSocket {
         protocolHandler.read();
         return protocolHandler.data;
     }
+
+    public function stats():Array<String> {
+        var end = "";
+        var message: Array<String> = new Array();
+        socket.output.writeString("stats\r\n");
+        while ( end != "END" ) {
+            end = socket.input.readLine();
+            if( end == "END" ) { break; }
+            message.push( end );
+        }
+        return message;
+    }
 }

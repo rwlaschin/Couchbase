@@ -40,37 +40,37 @@ class Test{
 
 		try { // Test, good host name
 			con = new CouchbaseSocket("localhost");
-			con.send('stats','');
+			con.stats();
 			var resp = con.read();
-			trace( resp );
-		} catch (e:String) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed - " + resp );
+		} catch (e:Dynamic) {
+			trace( "Failed - " + Std.string( e ) );
 		}
 
 		try { // Test, good ip 
 			con = new CouchbaseSocket("127.0.0.1");
-			con.send('stats','');
+			con.stats();
 			var resp = con.read();
-			trace( resp );
-		} catch (e:String) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed - " + resp );
+		} catch (e:Dynamic) {
+			trace( "Failed - " + Std.string( e ) );
 		}
 
 		try { // Test, bad host
 			con = new CouchbaseSocket("foonuggets");
-			con.send('stats','');
+			con.stats();
 			var resp = con.read();
 			trace( resp );
-		} catch (e:String) {
+		} catch (e:Dynamic) {
 			trace( "Expected Exception - " + Std.string( e ) );
 		}
 
 		try { // Test, bad port
 			con = new CouchbaseSocket("localhost",10001);
-			con.send('stats','');
+			con.stats();
 			var resp = con.read();
 			trace( resp );
-		} catch (e:String) {
+		} catch (e:Dynamic) {
 			trace( "Expected Exception - " + Std.string( e ) );
 		}
 
