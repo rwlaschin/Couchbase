@@ -34,13 +34,49 @@ class Test{
 	static function CouchbaseSocketTest() {
 		// create Socket
 		var con:CouchbaseSocket;
+		var resp;
 
 		try {
+			// command list: add, set, get, delete
+			//               replace, cas, gets(for cas value)
 			con = new CouchbaseSocket("localhost",11211);
 			// just a string
 			con.send('add','mynewstring','This is the data I\'m storing');
 			var resp = con.read();
-			trace(Std.string(resp) );
+			trace( "Expected - STORED, Got - " + Std.string(resp) );
+
+			con.send('add','mynewstring','This is the data I\'m storing');
+			var resp = con.read();
+			trace( "Expected - NOT_STORED, Got - " + Std.string(resp) );
+
+			con.send('set','mynewstring','This is the data I\'m storing');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('set','mynewstring1','This is the data I\'m storing');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('get','mynewstring');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('get','notexisting');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('delete','mynewstring');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('delete','mynewstring1');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
+			con.send('delete','notexisting');
+			var resp = con.read();
+			trace( Std.string(resp) );
+
 		} catch ( e:Dynamic ) {
 			trace( Std.string(e) );
 		}

@@ -18,18 +18,90 @@ class Host {
     }
 }
 
+class ProtocolHandler {
+
+    private var state:String;
+    
+    private var socket(default,default):sys.net.Socket;
+    public var data(default,default):String;
+    public var type(default,default):String;
+    public var key(default,default):String;
+    public var cas(default,default):Int;
+    public var length(default,default):Int;
+
+    public function get_socket() { return socket; }
+
+    public function get_type() { return type; }
+    public function get_key() { return key; }
+    public function get_cas() { return cas; }
+    public function get_length() { return length; }
+    public function get_data() { return data; }
+
+    public function new():Void {
+
+    }
+
+    public function initialize(socket:sys.net.Socket):Void {
+        this.socket = socket;
+    }
+
+    public function read(): Void {
+       // RESPONSE\r\n
+        // VALUE <key> <cas> <length>\r\n<payload>\r\nEND
+        state = "TYPE";
+        var notdone:Bool = true;
+        while( notdone ) {
+            switch( state ) {
+                default: notdone = false; break;
+                case "TYPE": this.readType(); break;
+                case "VALUE": this.readValue(); break;
+            }
+        }
+    }
+
+    public function readType(): Void {
+        var response:String = socket.input.readLine();
+        var fields:Array<String> = response.split(" ");
+        for( i in 0...fields.length) {
+            var value:String = fields[i];
+            switch(i){
+                case 0: type = value;
+                        data = value; // for errors there is only 1 field this will setup the data properly
+                case 1: key = value;
+                case 2: cas = Std.parseInt(value);
+                case 3: length = Std.parseInt(value);
+            }
+        }
+        state = type;
+    }
+
+    public function readValue(): Void {
+        // populate the data, read until 'END' ...
+        data = socket.input.readString(length);
+        var end:String = socket.input.readLine(); // clean up
+        trace( 'Read ('+length+') - ' + Std.string(data) );
+        trace( 'Read - ' + Std.string(end) );
+        state = end;
+    }
+}
+
 class MemcacheSocket {
     private var defaultPort:Int = 11211;
     private var socket:sys.net.Socket = null;
+    private var protocolHandler: ProtocolHandler = null;
 
     private var _host:Host;
 
-    public function new( host:String, _port:Null<Int> = null ) {
+    public function new( host:String, _port:Null<Int> = null, handler:ProtocolHandler=null ) {
         this._host = new Host (
                         host,
                         (_port != null ? _port : defaultPort)
                     );
         this.socket = new sys.net.Socket();
+
+        protocolHandler = ( handler == null ) ? new ProtocolHandler() : handler ;
+        protocolHandler.initialize(this.socket);
+
         open();
     }
 
@@ -58,9 +130,10 @@ class MemcacheSocket {
     }
 
     // http://docs.couchbase.com/couchbase-devguide-2.0/#performing-basic-telnet-operations
+    // http://docs.couchbase.com/couchbase-manual-2.0/#testing-couchbase-server-using-telnet
 
     public function send( command:String,
-                           key:String, data:Dynamic, expire:Int = 0,
+                           key:String, data:Dynamic = '', expire:Int = 0,
                            flags:Int = 0, cas:Null<Int> = null, noreply:Bool=false ):Void {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
@@ -88,8 +161,10 @@ class MemcacheSocket {
 
             // TODO: Add failure handling/retries
             socket.output.writeString( message + "\r\n" );
-            socket.output.writeString( encoded );
-            socket.output.writeString( "\r\n" );
+            if( data != '' ) { // request (get,gets,delete) should not have data sent
+                socket.output.writeString( encoded );
+                socket.output.writeString( "\r\n" );
+            }
             socket.output.flush();
         } catch (e:Dynamic) {
             trace(Std.string(e));
@@ -98,39 +173,7 @@ class MemcacheSocket {
 
     public function read():String {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
-
-        try {
-            // TODO: Add failure handling/retries
-            var message = "";
-            var readByte : Int = -1;
-            while( readByte != 0 && readByte != 0x0A ) {
-                readByte = socket.input.readByte();
-                if( readByte != 0x20 && readByte != 0x0D && readByte != 0x0A && readByte != 0 ) {
-                    message += String.fromCharCode(readByte);
-                }
-                if( readByte == 0x20 || readByte == 0x0D || readByte == 0 ){
-                    // only dump whne ready to read
-                    trace("Read - " + Std.string(message) );
-                }
-                
-                var type:String = message;
-                switch(type) {
-                    default: 
-                    case " ":
-                        message = ""; // remove and keep processing
-                        break;
-                    case "ERROR": 
-                        message = ""; // remove and keep processing
-                    case "NOT_STORED": case "NOT_FOUND":
-                        message = "";
-                        return "Failed - " + type;
-                    case "STORED": case "EXISTS": case "TOUCHED":
-                        message = "";
-                }
-            }
-        } catch (e:Dynamic) {
-            trace( Std.string(e) );
-        }
-        return "";
+        protocolHandler.read();
+        return protocolHandler.data;
     }
 }
