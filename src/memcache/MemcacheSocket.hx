@@ -61,55 +61,63 @@ class MemcacheSocket {
                            flags:Int = 0, cas:Null<Int> = null, noreply:Bool=false ):Void {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
-        // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
-        if( cas == null ) { cas = 0; }
-        var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+        try {
+            // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
+            if( cas == null ) { cas = 0; }
+            var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
 
-        byter.writeString( this.encode(data) );
-        var data = byter.getBytes();
-        var message:String = "";
-        message += command + " ";
-        message += key + " ";
-        message += flags + " "; // this can be used to communicate the storage type
-        message += expire + " ";
-        message += byter.length + " ";
-        message += cas + " ";
-        message += ( noreply  ? "noreply " : "" );
-        message += data; 
-        message += "\r\n";
+            byter.writeString( this.encode(data) );
+            var data = byter.getBytes();
+            var message:String = "";
+            message += command + " ";
+            message += key + " ";
+            message += flags + " "; // this can be used to communicate the storage type
+            message += expire + " ";
+            message += byter.length + " ";
+            message += cas + " ";
+            message += ( noreply  ? "noreply " : "" );
+            message += data; 
+            message += "\r\n";
 
-        trace(message);
+            trace(message);
 
-        // TODO: Add failure handling/retries
-        socket.write( message );
+            // TODO: Add failure handling/retries
+            socket.write( message );
+        } catch (e:Dynamic) {
+            trace(e);
+        }
     }
 
     public function read():String {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
-        // TODO: Add failure handling/retries
-        var message = "";
-        var readByte : Int = -1;
-        while( readByte != 0 ) {
-            readByte = socket.input.readByte();
-            message += String.fromCharCode(readByte);
-            if( readByte != 0x20 && readByte != 0x0D && readByte != 0x0A && readByte != 0 ) {
-                continue;
+        try {
+            // TODO: Add failure handling/retries
+            var message = "";
+            var readByte : Int = -1;
+            while( readByte != 0 ) {
+                readByte = socket.input.readByte();
+                message += String.fromCharCode(readByte);
+                if( readByte != 0x20 && readByte != 0x0D && readByte != 0x0A && readByte != 0 ) {
+                    continue;
+                }
+                trace("Read so far - " + message);
+                var type:String = message;
+                switch(type) {
+                    default: 
+                    case " ": case "\r" : case "\n":
+                        message = ""; // remove and keep processing
+                        break;
+                    case "NOT_STORED": case "NOT_FOUND":
+                        message = "";
+                        return "Failed - " + type;
+                    case "STORED": case "EXISTS": case "TOUCHED":
+                        message = "";
+                        return type;
+                }
             }
-            trace("Read so far - " + message);
-            var type:String = message;
-            switch(type) {
-                default: 
-                case " ": case "\r" : case "\n":
-                    message = ""; // remove and keep processing
-                    break;
-                case "NOT_STORED": case "NOT_FOUND":
-                    message = "";
-                    return "Failed - " + type;
-                case "STORED": case "EXISTS": case "TOUCHED":
-                    message = "";
-                    return type;
-            }
+        } catch (e:Dynamic) {
+            trace(e);
         }
         return "";
     }

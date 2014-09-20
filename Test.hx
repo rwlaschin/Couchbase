@@ -40,7 +40,7 @@ class Test{
 			// just a string
 			con.send('add','mynewstring','This is the data I\'m storing');
 		} catch ( e:Dynamic ) {
-			trace(Std.string(e));
+			trace( Std.string(e) );
 		}
 		// send command
 		
