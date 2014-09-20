@@ -86,6 +86,7 @@ class MemcacheSocket {
             socket.output.writeString( message );
             socket.output.writeFullBytes( data, 0, data.length );
             socket.output.writeString( "\r\n" );
+            socket.output.flush();
         } catch (e:Dynamic) {
             trace(Std.string(e));
         }
