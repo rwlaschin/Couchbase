@@ -35,8 +35,8 @@ class MemcacheSocket {
     private function open() : Void {
         try {
             socket.connect( _host.ip, _host.port );
-        } catch (e:String) {
-            trace(e);
+        } catch (e:Dynamic) {
+            trace( Std.string(e) );
         }
     }
 
@@ -85,7 +85,7 @@ class MemcacheSocket {
             socket.write( data );
             socket.write( "\r\n" );
         } catch (e:Dynamic) {
-            trace(e);
+            trace(Std.string(e));
         }
     }
 
@@ -118,7 +118,7 @@ class MemcacheSocket {
                 }
             }
         } catch (e:Dynamic) {
-            trace(e);
+            trace( Std.string(e) );
         }
         return "";
     }
