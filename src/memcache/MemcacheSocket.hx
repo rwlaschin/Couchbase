@@ -152,7 +152,7 @@ class MemcacheSocket {
             */
 
             var message:String = "";
-            switch( cmd ) {
+            switch( command ) {
                 case "delete":
                     message += command;
                     data = '';
