@@ -39,8 +39,8 @@ class Test{
 			con = new CouchbaseSocket("localhost",11211);
 			// just a string
 			con.send('add','mynewstring','This is the data I\'m storing');
-		} catch(e:String) {
-			trace(e);
+		} catch ( e:Dynamic ) {
+			trace(Std.string(e));
 		}
 		// send command
 		
@@ -57,8 +57,8 @@ class Test{
 			con = new MemcacheSocket("localhost",11211);
 			// send command
 			// con.send('add','mynewstring',"This is the data I'm storing");
-		} catch ( e:String ) {
-			trace(e);
+		} catch ( e:Dynamic ) {
+			trace(Std.string(e));
 		}
 	}
 }
