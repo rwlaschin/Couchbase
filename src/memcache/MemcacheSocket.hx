@@ -64,25 +64,26 @@ class MemcacheSocket {
         try {
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
             if( cas == null ) { cas = 0; }
-            var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
 
-            byter.writeString( this.encode(data) );
-            var data = byter.getBytes();
+            var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+            var encoded:String = this.encode(data);
+            var data = encoded;
+
             var message:String = "";
             message += command + " ";
             message += key + " ";
             message += flags + " "; // this can be used to communicate the storage type
             message += expire + " ";
-            message += byter.length + " ";
+            message += data.length + " ";
             message += cas + " ";
             message += ( noreply  ? "noreply " : "" );
-            message += data; 
-            message += "\r\n";
 
-            trace(message);
+            trace(message + " " + encoded );
 
             // TODO: Add failure handling/retries
             socket.write( message );
+            socket.write( data );
+            socket.write( "\r\n" );
         } catch (e:Dynamic) {
             trace(e);
         }
