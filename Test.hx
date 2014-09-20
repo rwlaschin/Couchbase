@@ -39,6 +39,8 @@ class Test{
 			con = new CouchbaseSocket("localhost",11211);
 			// just a string
 			con.send('add','mynewstring','This is the data I\'m storing');
+			var resp = con.read();
+			trace(Std.string(resp) );
 		} catch ( e:Dynamic ) {
 			trace( Std.string(e) );
 		}
