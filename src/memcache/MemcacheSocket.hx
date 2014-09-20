@@ -52,12 +52,9 @@ class ProtocolHandler {
         var notdone:Bool = true;
         while( notdone ) {
             switch( state ) {
-                case "TYPE": 
-                    this.readType(); 
-                case "VALUE": 
-                    this.readValue(); 
-                default: 
-                    notdone = false; 
+                case "TYPE": this.readType();
+                case "VALUE": this.readValue();
+                default: notdone = false;
             }
         }
     }
