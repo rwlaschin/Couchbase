@@ -185,9 +185,12 @@ class MemcacheSocket {
         socket.output.writeString("stats\r\n");
         while ( end != "END" ) {
             end = socket.input.readLine();
-            if( end == "END" ) { break; }
-            message.push( end );
+            if( end != "END" ) { 
+                message.push( end );
+            }
+trace("4 - ");
         }
+trace("5 - ");
         return message;
     }
 }

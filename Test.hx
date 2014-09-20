@@ -40,36 +40,32 @@ class Test{
 
 		try { // Test, good host name
 			con = new CouchbaseSocket("localhost");
-			con.stats();
-			var resp = con.read();
-			trace( "Passed - " + resp );
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
 
 		try { // Test, good ip 
 			con = new CouchbaseSocket("127.0.0.1");
-			con.stats();
-			var resp = con.read();
-			trace( "Passed - " + resp );
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
 
 		try { // Test, bad host
 			con = new CouchbaseSocket("foonuggets");
-			con.stats();
-			var resp = con.read();
-			trace( resp );
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
 			trace( "Expected Exception - " + Std.string( e ) );
 		}
 
 		try { // Test, bad port
 			con = new CouchbaseSocket("localhost",10001);
-			con.stats();
-			var resp = con.read();
-			trace( resp );
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
 			trace( "Expected Exception - " + Std.string( e ) );
 		}
@@ -84,7 +80,7 @@ class Test{
 				{ key : "mynewstring",
 				  value : "This is the data I'm storing", 
 				  result : ["NOT_STORED","NOT_STORED","This is the data I'm storing",""], 
-				  cmd : [ 'add', 'set', 'get', 'remove' ]
+				  cmd : [ 'add', 'set', 'get', 'delete' ]
 				}
 			];
 
@@ -109,7 +105,7 @@ class Test{
 					}
 					var response = con.read();
 					trace( "Expected - " + Std.string( result ) );
-					trace( "Recieved - " + Std.string( response ) );
+					trace( "Received - " + Std.string( response ) );
 					trace( ( result == response ) ? "Passed" : "Failed" );
 				}
 			}
