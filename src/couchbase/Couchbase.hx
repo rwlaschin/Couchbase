@@ -4,6 +4,7 @@ import haxe.Json;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import sys.net.Socket;
+import Math;
 
 import couchbase.CouchbaseConst;
 import couchbase.CouchbaseException;
@@ -141,7 +142,7 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return "" {} }
+    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Store multiple documents in the cluster.
@@ -155,7 +156,7 @@ class Couchbase {
      * @return boolean true if success
      * @throws \CouchbaseException if an error occurs
      */
-    function setMulti ( documents:Array<Dynamic>,  expiry:Int,  persist_to:Int,  replicate_to:Int ):Bool { return false {} }
+    function setMulti ( documents:Array<Dynamic>,  expiry:Int,  persist_to:Int,  replicate_to:Int ):Bool { return false; }
 
     /**
      * Replace a document in the cluster.
@@ -171,7 +172,7 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function replace ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String {}
+    function replace ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Prepend a document to another document.
@@ -187,7 +188,7 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function prepend ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String {}
+    function prepend ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Append a document to another document.
@@ -203,13 +204,13 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function append ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String {}
+    function append ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Please use replace with the $cas field specified.
      *
      */
-    function cas ( cas:Dynamic,  id:Dynamic,  document:Dynamic,  expiry:Dynamic ):Dynamic {}
+    function cas ( cas:Dynamic,  id:Dynamic,  document:Dynamic,  expiry:Dynamic ):Dynamic { return {}; }
 
     /**
      * Retrieve a document from the cluster.
@@ -225,7 +226,7 @@ class Couchbase {
      * @return object The document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function get ( id:String,  callback:Void->Void,  cas:String ):Dynamic {}
+    function get ( id:String,  callback:Void->Void,  cas:String ):Dynamic { return {}; }
 
     /**
      * Retrieve multiple documents from the cluster.
@@ -236,7 +237,7 @@ class Couchbase {
      * @return array an array containing the documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int ):Array<Dynamic> {}
+    function getMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int ):Array<Dynamic> { return {}; }
 
     /**
      * Retrieve a replica of a document from the cluster.
@@ -249,7 +250,7 @@ class Couchbase {
      * @return object The document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function getReplica ( id:Dynamic,  strategy:String ):Dynamic {}
+    function getReplica ( id:Dynamic,  strategy:String ):Dynamic { return {}; }
 
     /**
      * Retrieve an object from the cache and lock it from modifications.
@@ -261,7 +262,7 @@ value configured on the server).
      * @return object The requested document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndLock ( id:String,  cas:String,  expiry:Int ):Dynamic {}
+    function getAndLock ( id:String,  cas:String,  expiry:Int ):Dynamic { return {}; }
 
     /**
      * Retrieve and lock multiple documents from the cache.
@@ -274,7 +275,7 @@ value configured on the server).
      * @return array an array containint the requested documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndLockMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int,  expiry:Int ):Array<Dynamic> {}
+    function getAndLockMulti ( ids:Array<Dynamic>,  cas:Array<Dynamic>,  flags:Int,  expiry:Int ):Array<Dynamic> { return {}; }
 
     /**
      * Retrieve a document from the cluster and update its time to live.
@@ -285,7 +286,7 @@ value configured on the server).
      * @return object The requested document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndTouch ( id:String,  expiry:Int,  cas:String ):Dynamic {}
+    function getAndTouch ( id:String,  expiry:Int,  cas:String ):Dynamic { return {}; }
 
     /**
      * Retrieve multiple documents from the cluster and update their time to live.
@@ -296,7 +297,7 @@ value configured on the server).
      * @return array an array containing the requested documents
      * @throws \CouchbaseException if an error occurs
      */
-    function getAndTouchMulti ( ids:Array<Dynamic>,  expiry:Int,  cas:Array<Dynamic> ):Array<Dynamic> {}
+    function getAndTouchMulti ( ids:Array<Dynamic>,  expiry:Int,  cas:Array<Dynamic> ):Array<Dynamic> { return {}; }
 
     /**
      * Unlock a previously locked document.
@@ -306,7 +307,7 @@ value configured on the server).
      * @return boolean true upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function unlock ( id:String,  cas:String ):Bool {}
+    function unlock ( id:String,  cas:String ):Bool { return false; }
 
     /**
      * Touch (update time to live) a document in the cluster.
@@ -317,7 +318,7 @@ value configured on the server).
                will always return "0" for the cas value)
      * @throws \CouchbaseException if an error occurs
      */
-    function touch ( id:String,  expiry:Int ):String {}
+    function touch ( id:String,  expiry:Int ):String { return ""; }
 
     /**
      * Touch (update time to live) multiple documents in the cluster.
@@ -327,7 +328,7 @@ value configured on the server).
      * @return boolean true upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function touchMulti ( ids:Array<Dynamic>,  expiry:Int ):Bool {}
+    function touchMulti ( ids:Array<Dynamic>,  expiry:Int ):Bool { return false; }
 
     /**
      * Delete a document from the cluster.
@@ -341,7 +342,7 @@ value configured on the server).
      * @return string the cas value representing the delete document if success
      * @throws \CouchbaseException if an error occurs
      */
-    function delete ( id:String,  cas:String,  persist_to:Int,  replicate_to:Int ):String {}
+    function delete ( id:String,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
 
     /**
      * Increment a numeric value in the cluster.
@@ -354,7 +355,7 @@ value configured on the server).
      * @return integer the new value upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function increment ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int {}
+    function increment ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return Math.Nan; }
 
     /**
      * Decrement a numeric value in the cluster.
@@ -367,7 +368,7 @@ value configured on the server).
      * @return integer the new value upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function decrement ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int {}
+    function decrement ( id:String,  delta:Int,  create:Bool,  expire:Int,  initial:Int ):Int { return Math.Nan; }
 
     /**
      * Delete all documents in the bucket.
@@ -375,7 +376,7 @@ value configured on the server).
      * @return boolean true upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function flush ( ):Bool {}
+    function flush ( ):Bool { return false; }
 
     /**
      * Issue a get request, but do not wait for responses.
@@ -388,7 +389,7 @@ value configured on the server).
      * @return boolean true upon success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function getDelayed ( ids:Array<Dynamic>,  with_cas:Bool,  callback:Void->Void,  expiry:Int,  lock:Bool ):Bool {}
+    function getDelayed ( ids:Array<Dynamic>,  with_cas:Bool,  callback:Void->Void,  expiry:Int,  lock:Bool ):Bool { return false; }
 
     /**
      * Fetch the one of the received documents requested from getDelayed.
@@ -397,7 +398,7 @@ value configured on the server).
               or NULL if there are no more documents.
      * @throws \CouchbaseException if an error occurs
      */
-    function fetch ( ):Array<Dynamic> {}
+    function fetch ( ):Array<Dynamic> { return {}; }
 
     /**
      * Fetch the one of the received documents requested from getDelayed.
@@ -406,7 +407,7 @@ value configured on the server).
               or NULL if there are no more documents.
      * @throws \CouchbaseException if an error occurs
      */
-    function fetchAll ( ):Array<Dynamic> {}
+    function fetchAll ( ):Array<Dynamic> { return {}; }
 
     /**
      * Execute a view request.
@@ -420,7 +421,7 @@ value configured on the server).
               or an array containing an error message
      * @throws \CouchbaseException if an error occurs
      */
-    function view ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):Array<Dynamic> {}
+    function view ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):Array<Dynamic> { return {}; }
 
     /**
      * Generate a view request.
@@ -433,7 +434,7 @@ value configured on the server).
      * @return string generated view request in format: "/_design/$doc/_view/$view?stale=ok&amp;..."
      * @throws \CouchbaseException if an error occurs
      */
-    function viewGenQuery ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):String {}
+    function viewGenQuery ( document:String,  view:String,  options:Array<Dynamic>,  return_errors:Bool ):String { return ""; }
 
     /**
      * Retrieve statistics information from the cluster.
@@ -441,7 +442,7 @@ value configured on the server).
      * @return array an array containing all "key" =&amp;gt; "value" pairs upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function getStats ( ):Array<Dynamic> {}
+    function getStats ( ):Array<Dynamic> { return {}; }
 
     /**
      * Get the last result code from the extension internals.
@@ -449,7 +450,7 @@ value configured on the server).
      * @return integer An error code representing the last error code as
         seen by libcouchbase
      */
-    function getResultCode ( ):Int {}
+    function getResultCode ( ):Int { return Math.Nan; }
 
     /**
      * Get a textual representation of the last result from the extension
@@ -458,7 +459,7 @@ internals.
      * @return string An textual string describing last error code as
         seen by libcouchbase
      */
-    function getResultMessage ( ):String {}
+    function getResultMessage ( ):String { return ""; }
 
     /**
      * Update one of the tunables.
@@ -467,7 +468,7 @@ internals.
      * @param integer the new value for the option
      * @throws \CouchbaseException if an error occurs (e.g illegal option / value)
      */
-    function setOption ( option:Int,  value:Int ):Dynamic {}
+    function setOption ( option:Int,  value:Int ):Dynamic { return {}; }
 
     /**
      * Retrieve the current value of a tunable.
@@ -477,7 +478,7 @@ internals.
               description of the legal options to retrieve.
      * @throws \CouchbaseException if an error occurs (e.g illegal option)
      */
-    function getOption ( option:Int ):Int {}
+    function getOption ( option:Int ):Int { return Math.Nan; }
 
     /**
      * Get the version numbers of the memcached servers in the cluster.
@@ -485,14 +486,14 @@ internals.
      * @return array an array containing the memcached version on each node
      * @throws \CouchbaseException if an error occurs
      */
-    function getVersion ( ):Array<Dynamic> {}
+    function getVersion ( ):Array<Dynamic> { return {}; }
 
     /**
      * Retrieve the version number of the client.
      *
      * @return string client library version number
      */
-    function getClientVersion ( ):String {}
+    function getClientVersion ( ):String { return ""; }
 
     /**
      * Get the number of replicas configured for the bucket.
@@ -500,7 +501,7 @@ internals.
      * @return integer The number of replicas for the bucket
      * @throws \CouchbaseException if an error occurs
      */
-    function getNumReplicas ( ):Int {}
+    function getNumReplicas ( ):Int { return Math.Nan; }
 
     /**
      * Get the name of the servers in the cluster.
@@ -508,7 +509,7 @@ internals.
      * @return array an array containing all of the servers in the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function getServers ( ):Array<Dynamic> {}
+    function getServers ( ):Array<Dynamic> { return {}; }
 
     /**
      * Get information about a key in the cluster.
@@ -520,7 +521,7 @@ internals.
      * @return boolean true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function observe ( id:String,  cas:String,  details:Array<Dynamic> ):Bool {}
+    function observe ( id:String,  cas:String,  details:Array<Dynamic> ):Bool { return false; }
 
     /**
      * Get information about multiple keys in the cluster.
@@ -530,7 +531,7 @@ internals.
      * @return array with the keys with true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function observeMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> {}
+    function observeMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return {}; }
 
     /**
      * Wait for a document to reach a certain state.
@@ -541,7 +542,7 @@ internals.
      * @return boolean true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function keyDurability ( id:String,  cas:String,  details:Array<Dynamic> ):Bool {}
+    function keyDurability ( id:String,  cas:String,  details:Array<Dynamic> ):Bool { return false; }
 
     /**
      * Wait for multiple documents to reach a certain state.
@@ -552,21 +553,21 @@ internals.
      * @return array with the keys with true on success, false otherwise
      * @throws \CouchbaseException if an error occurs
      */
-    function keyDurabilityMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> {}
+    function keyDurabilityMulti ( ids:Array<Dynamic>,  details:Array<Dynamic> ):Array<Dynamic> { return {}; }
 
     /**
      * Retrieve the current operation timeout.
      *
      * @return integer The currently used timeout specified in usec
      */
-    function getTimeout ( ):Int {}
+    function getTimeout ( ):Int { return Math.Nan; }
 
     /**
      * Specify an operation timeout.
      *
      * @param integer the new operation timeout specified in usec
      */
-    function setTimeout ( timeout:Int ):Dynamic {}
+    function setTimeout ( timeout:Int ):Dynamic { return {}; }
 
     /**
      * Get a design document from the cluster.
@@ -575,7 +576,7 @@ internals.
      * @return string the content of the document if success
      * @throws \CouchbaseException if an error occurs
      */
-    function getDesignDoc ( name:String ):String {}
+    function getDesignDoc ( name:String ):String { return ""; }
 
     /**
      * Store a design document in the cluster.
@@ -585,7 +586,7 @@ internals.
      * @return boolean true on success
      * @throws \CouchbaseException if an error occurs
      */
-    function setDesignDoc ( name:String,  document:String ):Bool {}
+    function setDesignDoc ( name:String,  document:String ):Bool { return false; }
 
     /**
      * Delete the named design document from the cluster.
@@ -594,7 +595,7 @@ internals.
      * @return boolean true on success
      * @throws \CouchbaseException if an error occurs
      */
-    function deleteDesignDoc ( name:String ):Bool {}
+    function deleteDesignDoc ( name:String ):Bool { return false; }
 
     /**
      * List all design documents for this bucket
@@ -603,6 +604,6 @@ internals.
                the design documents
      * @throws \CouchbaseException if an error occurs
      */
-    function listDesignDocs ( ):String {}
+    function listDesignDocs ( ):String { return ""; }
 
 }
