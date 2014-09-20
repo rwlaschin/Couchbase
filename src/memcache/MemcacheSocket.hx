@@ -21,7 +21,7 @@ class Host {
 class ProtocolHandler {
 
     private var state:String;
-    
+
     private var socket(default,default):sys.net.Socket;
     public var data(default,default):String;
     public var type(default,default):String;
@@ -52,15 +52,16 @@ class ProtocolHandler {
         var notdone:Bool = true;
         while( notdone ) {
             switch( state ) {
-                default: notdone = false; break;
                 case "TYPE": this.readType(); break;
                 case "VALUE": this.readValue(); break;
+                default: notdone = false; break;
             }
         }
     }
 
     public function readType(): Void {
         var response:String = socket.input.readLine();
+        trace( 'Read - ' + Std.string(response) );
         var fields:Array<String> = response.split(" ");
         for( i in 0...fields.length) {
             var value:String = fields[i];
