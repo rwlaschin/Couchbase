@@ -19,7 +19,8 @@ class Couchbase {
     private var password:String;
     private var bucket:String;
     private var persistent:Bool;
-    private static inline var port:Int = 8091; // default port
+    private var byter:BytesOutput;
+    static inline var port:Int = 8091; // default port
 
     /**
      * Constructs a new instance of a Couchbase object.
@@ -35,8 +36,9 @@ class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-     public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
-        this.hosts = new Array(hosts.length);
+    function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
+        this.hosts = new Array();
+        this.byter = new BytesOutput();
 
         this.user = user;
         this.password = password;
@@ -46,7 +48,7 @@ class Couchbase {
 
         for( i in 0...hosts.length) {
             var hostinfo = hosts[i].split(':');
-            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : sys.net.Host(hostinfo[0]),
+            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : new sys.net.Host(hostinfo[0]),
                               port: hostinfo.length < 2 ? Couchbase.port : Std.parseInt(hostinfo[1]) };
         }
 
@@ -61,22 +63,25 @@ class Couchbase {
         try {
             socket.connect( host.ip, host.port );
             return socket;
-        } catch (e:Exception) {
+        } catch (e:String) {
             trace(e);
-            return null;
         }
+        // leak??
+        return null;
     }
 
     private function sendCommand( socket:sys.net.Socket, command:String, key:String, flags:Int, data:Dynamic ):Void {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
         // <command name> <key> <flags> <exptime> <bytes> [noreply]\r\n
-        result = 
+        var message:String = 
             command + " " +
             key + " " +
-            BytesOutput.writeInt16(flags) + " " + // do I need to do this?
-            BytesOutput.writeString( Json.stringify(data) ) + 
+            this.byter.writeUInt16(flags) + " " + // do I need to do this?
+            this.byter.writeString( Json.stringify(data) ) + 
             "\r\n";
+            
+        socket.write( message );
     }
 
     private function readResponse( socket:sys.net.Socket ):Void {
@@ -120,7 +125,7 @@ class Couchbase {
                 }
             }
         }
-        throw CouchbaseException();
+        throw new CouchbaseException();
     }
 
     /**
