@@ -82,7 +82,8 @@ class ProtocolHandler {
     public function readValue(): Void {
         // populate the data, read until 'END' ...
         data = socket.input.readString(length);
-        var end:String = socket.input.readLine(); // clean up
+        socket.input.readLine(); // eat ending '\r\n'
+        var end:String = socket.input.readLine(); // close line
         trace( 'Read ('+length+') - ' + Std.string(data) );
         trace( 'Read - ' + Std.string(end) );
         state = end;
