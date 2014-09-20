@@ -108,7 +108,11 @@ class MemcacheSocket {
                 if( readByte != 0x20 && readByte != 0x0D && readByte != 0x0A && readByte != 0 ) {
                     message += String.fromCharCode(readByte);
                 }
-                trace("Read - " + Std.string(message) );
+                if( readByte == 0x20 || readByte == 0x0D || readByte == 0 ){
+                    // only dump whne ready to read
+                    trace("Read - " + Std.string(message) );
+                }
+                
                 var type:String = message;
                 switch(type) {
                     default: 
