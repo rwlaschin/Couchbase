@@ -2,6 +2,7 @@ package ;
 
 import couchbase.Couchbase;
 import couchbase.CouchbaseConst;
+import couchbase.CouchbaseClusterManager;
 
 // These are low level for handling the protocol
 import couchbase.CouchbaseSocket;

@@ -14,10 +14,6 @@ class CouchbaseSocket extends MemcacheSocket
 		super( host, port );
 	}
 
-	public function authenticate(user:String,password:String):Void {
-
-	}
-
 	private override function encode( data:Dynamic ):String {
 		return Json.stringify(data);
 	}
