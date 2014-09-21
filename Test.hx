@@ -113,7 +113,7 @@ class Test{
 					var response = con.read();
 					trace( "Expected - " + Std.string( result ) );
 					trace( "Received - " + Std.string( response ) );
-					trace( ( result == response ) ? "Passed" : "Failed" );
+					trace( ( Std.string( result ) == Std.string( response ) ) ? "Passed" : "Failed" );
 				}
 			}
 			
@@ -201,7 +201,7 @@ class Test{
 					var response = con.read();
 					trace( "Expected - " + Std.string( result ) );
 					trace( "Received - " + Std.string( response ) );
-					trace( ( result == response ) ? "Passed" : "Failed" );
+					trace( ( Std.string( result ) == Std.string( response ) ) ? "Passed" : "Failed" );
 				}
 			}
 			
