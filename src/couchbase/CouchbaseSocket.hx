@@ -23,7 +23,8 @@ class CouchbaseSocket extends MemcacheSocket
 	}
 
 	private override function decode( data:String ):Dynamic {
-		return Json.parse(data);
+		try { return Json.parse(data); }
+		catch (e:Dynamic) { return data; }
 	}
 
 }

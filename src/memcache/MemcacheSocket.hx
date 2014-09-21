@@ -2,8 +2,6 @@
 package memcache;
 
 import sys.net.Socket;
-import haxe.io.Bytes;
-import haxe.io.BytesOutput;
 
 class Host {
     public var ip(default,default) : sys.net.Host;
@@ -145,11 +143,10 @@ class MemcacheSocket {
             if( cas == null ) { cas = 0; }
 
             var encoded:String = this.encode(data);
-            /*
-                var byter:haxe.io.BytesOutput = new haxe.io.BytesOutput();
-                byter.writeString( encoded );
-                var data:Bytes = byter.getBytes();
-            */
+            /*var byteOutput:BytesOutput = new BytesOutput();
+            byteOutput.writeString( encoded );
+            var bytes = byteOutput.getBytes();*/
+
             var message:String = command + " ";
             switch( command ) {
                 case "delete":
@@ -189,13 +186,13 @@ class MemcacheSocket {
         var message = "";
         message += "stats";
         if ( cmd != '' ) { 
-            message += " " + cmd; 
+            message += " " + cmd;
         }
         message += "\r\n";
         socket.output.writeString(message);
         while ( true ) { // infinite loop on error?
             var end:String = socket.input.readLine();
-            if( end != "END" ) { 
+            if( end != "END" ) {
                 response.push( end );
             } else {
                 break;
