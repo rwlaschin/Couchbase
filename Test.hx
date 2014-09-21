@@ -71,15 +71,17 @@ class Test{
 		}
 
 		try {
+			var mixed1:Array<Dynamic> = ["STORED", ["This is the data I'm storing"] ];
+			var mixed2:Array<Dynamic> = ["NOT_STORED","STORED", { msg : "This is the data I'm storing" },"DELETED"];
 			var data:Array<Dynamic> = [
 				{ key : "cb_mynewstring",
-				  value : "This is the data I'm storing", 
-				  result : ["STORED","This is the data I'm storing"],
+				  value : ["This is the data I'm storing"], 
+				  result : mixed1,
 				  cmd : [ 'add', 'get' ] 
 				},
 				{ key : "cb_mynewstring",
-				  value : "This is the data I'm storing", 
-				  result : ["NOT_STORED","STORED","This is the data I'm storing","DELETED"], 
+				  value : { msg : "This is the data I'm storing" }, 
+				  result : mixed2,
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
 				}
 			];
