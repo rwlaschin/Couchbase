@@ -127,7 +127,7 @@ class MemcacheSocket {
         return Std.string(data);
     }
 
-    private function decode( data:String, len:Int ):Dynamic {
+    private function decode( data:String ):Dynamic {
         return Std.string(data);
     }
 
@@ -181,19 +181,26 @@ class MemcacheSocket {
     public function read():String {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
         protocolHandler.read();
-        return protocolHandler.data;
+        return this.decode(protocolHandler.data);
     }
 
-    public function stats():Array<String> {
-        var end = "";
-        var message: Array<String> = new Array();
-        socket.output.writeString("stats\r\n");
-        while ( end != "END" ) {
-            end = socket.input.readLine();
+    public function stats( cmd:String='' ):Array<String> {
+        var response: Array<String> = new Array();
+        var message = "";
+        message += "stats";
+        if ( cmd != '' ) { 
+            message += " " + cmd; 
+        }
+        message += "\r\n";
+        socket.output.writeString(message);
+        while ( true ) { // infinite loop on error?
+            var end:String = socket.input.readLine();
             if( end != "END" ) { 
-                message.push( end );
+                response.push( end );
+            } else {
+                break;
             }
         }
-        return message;
+        return response;
     }
 }

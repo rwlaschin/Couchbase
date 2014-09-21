@@ -1,6 +1,8 @@
 
 package couchbase;
 
+import haxe.Json;
+
 import memcache.MemcacheSocket;
 
 class CouchbaseSocket extends MemcacheSocket
@@ -14,6 +16,14 @@ class CouchbaseSocket extends MemcacheSocket
 
 	public function authenticate(user:String,password:String):Void {
 
+	}
+
+	private override function encode( data:Dynamic ):String {
+		return Json.stringify(data);
+	}
+
+	private override function decode( data:String ):Dynamic {
+		return Json.parse(data);
 	}
 
 }

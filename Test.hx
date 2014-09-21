@@ -72,12 +72,12 @@ class Test{
 
 		try {
 			var data:Array<Dynamic> = [
-				{ key : "mynewstring",
+				{ key : "cb_mynewstring",
 				  value : "This is the data I'm storing", 
 				  result : ["STORED","This is the data I'm storing"],
 				  cmd : [ 'add', 'get' ] 
 				},
-				{ key : "mynewstring",
+				{ key : "cb_mynewstring",
 				  value : "This is the data I'm storing", 
 				  result : ["NOT_STORED","STORED","This is the data I'm storing","DELETED"], 
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
@@ -124,12 +124,82 @@ class Test{
 	static function MemcacheSocketTest() {
 		// create Socket
 		var con:MemcacheSocket;
+		var resp;
+
+		try { // Test, good host name
+			con = new MemcacheSocket("localhost");
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
+		} catch (e:Dynamic) {
+			trace( "Failed - " + Std.string( e ) );
+		}
+
+		try { // Test, good ip 
+			con = new MemcacheSocket("127.0.0.1");
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
+		} catch (e:Dynamic) {
+			trace( "Failed - " + Std.string( e ) );
+		}
+
+		try { // Test, bad host
+			con = new MemcacheSocket("foonuggets");
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
+		} catch (e:Dynamic) {
+			trace( "Expected Exception - " + Std.string( e ) );
+		}
+
+		try { // Test, bad port
+			con = new MemcacheSocket("localhost",10001);
+			var resp = con.stats();
+			trace( "Passed - " + Std.string(resp) );
+		} catch (e:Dynamic) {
+			trace( "Expected Exception - " + Std.string( e ) );
+		}
+
 		try {
+			var data:Array<Dynamic> = [
+				{ key : "mc_mynewstring",
+				  value : "This is the data I'm storing", 
+				  result : ["STORED","This is the data I'm storing"],
+				  cmd : [ 'add', 'get' ] 
+				},
+				{ key : "mc_mynewstring",
+				  value : "This is the data I'm storing", 
+				  result : ["NOT_STORED","STORED","This is the data I'm storing","DELETED"], 
+				  cmd : [ 'add', 'set', 'get', 'delete' ]
+				}
+			];
+
+			// command list: add, set, get, delete
+			//               replace, cas, gets(for cas value)
+
 			con = new MemcacheSocket("localhost",11211);
-			// send command
-			// con.send('add','mynewstring',"This is the data I'm storing");
+			for( i in 0...data.length ) {
+				var testInfo:Dynamic = data[i];
+				var cmds:Array<String> = testInfo.cmd;
+				var results:Array<String> = testInfo.result;
+				for(j in 0...cmds.length ) {
+					var cmd:String = cmds[j];
+					var result:String = results[j];
+					trace( "Test <"+ testInfo.key +"> - cmd <"+ cmd +">" );
+					switch( cmd ) {
+						case "add": con.send(cmd,testInfo.key,testInfo.value);
+						case "set": con.send(cmd,testInfo.key,testInfo.value);
+						case "replace": con.send(cmd,testInfo.key,testInfo.value);
+						case "get": con.send(cmd,testInfo.key);
+						case "delete": con.send(cmd,testInfo.key);
+					}
+					var response = con.read();
+					trace( "Expected - " + Std.string( result ) );
+					trace( "Received - " + Std.string( response ) );
+					trace( ( result == response ) ? "Passed" : "Failed" );
+				}
+			}
+			
 		} catch ( e:Dynamic ) {
-			trace(Std.string(e));
+			trace( Std.string(e) );
 		}
 	}
 }
