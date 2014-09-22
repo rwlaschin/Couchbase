@@ -12,7 +12,7 @@ import Math;
 class Couchbase {
 
     private var sockets:Array<sys.net.Socket>;
-    private var hosts:Array<Dynamic>;
+    private var connections:Array<Dynamic>;
     private var user:String;
     private var password:String;
     private var bucket:String;
@@ -34,19 +34,25 @@ class Couchbase {
      * @param boolean If a persistent object should be used or not
      */
     public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
-        this.hosts = new Array();
-
         this.user = user;
         this.password = password;
         this.bucket = bucket;
         this.persistent = persistent;
-        var regMatch:EReg = ~/(?:\d{1,3}[.]){3}\d{1,3}$/;
+        this.connections = new Array();
 
         for( i in 0...hosts.length) {
             var hostinfo = hosts[i].split(':');
-            this.hosts[i] = { ip :  regMatch.match(hostinfo[0]) ? hostinfo[0] : (new sys.net.Host(hostinfo[0])).toString(),
-                              port: hostinfo.length < 2 ? Couchbase.port : Std.parseInt(hostinfo[1]) };
+            var host = hostinfo[0];
+            var port = hostinfo.length >= 2 ? Std.parseInt(hostinfo[1]) : null;
+            try {
+                var con = new CouchbaseSocket( host, port);
+                connections.push( con );
+            } catch (e:Dynamic) {
+                trace( "Error connecting to <"+host+( port==null ? ":"+port : "" )+">");
+            }
         }
+
+        // there are two interfaces, management interface and the command interface
 
         // open a connection
         // get the mapping table
@@ -68,19 +74,6 @@ class Couchbase {
      * @throws \CouchbaseException if an error occurs
      */
     function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String {
-        /*for( i in 0...this.hosts.length ) {
-            var host = this.hosts[i];
-            var socket = openConnection( host );
-            if( socket != null ) {
-                sendCommand( socket, 'add', id, 0, document );
-                var response = readResponse( socket );
-                socket.close();
-                // if the socket isn't for the first host, switch them
-                // we'll need to ask for a new host list
-                return response;
-            }
-        }*/
-        throw "CouchbaseException()";
         return "";
     }
 

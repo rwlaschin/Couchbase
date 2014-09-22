@@ -58,23 +58,29 @@ class Test{
 		try { // Test, bad host
 			con = new CouchbaseSocket("foonuggets");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed Exception - " + Std.string( e ) );
 		}
 
 		try { // Test, bad port
 			con = new CouchbaseSocket("localhost",10001);
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed Exception - " + Std.string( e ) );
 		}
 
 		try {
 			var mixed1:Array<Dynamic> = ["STORED", ["This is the data I'm storing"] ];
 			var mixed2:Array<Dynamic> = ["NOT_STORED","STORED", { msg : "This is the data I'm storing" },"DELETED"];
+			var mixed3:Array<Dynamic> = ["STORED", 100000, 'DELETED' ];
 			var data:Array<Dynamic> = [
+				{ key : "cb_mynewnumber",
+				  value : 100000, 
+				  result : mixed3,
+				  cmd : [ 'add', 'get', 'delete' ] 
+				},
 				{ key : "cb_mynewstring",
 				  value : "This is the data I'm storing", 
 				  result : ["STORED", "This is the data I'm storing", 'DELETED' ],

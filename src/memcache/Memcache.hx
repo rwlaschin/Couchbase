@@ -3,6 +3,8 @@ package memcache;
 
 import memcache.MemcacheSocket;
 
+import haxe.crypto.Crc32;
+import haxe.io.Bytes;
 import haxe.Utf8;
 import Math;
 
@@ -12,10 +14,9 @@ class Memcache
 
     // Overload this for a better indexing algo
     private function idToIndex( id: String ) : Int {
-        var key:Int = 0;
-        for( i in 0...id.length ) {
-            key += haxe.Utf8.charCodeAt(id,i);
-        }
+        // If I put this in a hash I can quick look up to see
+        // if I've already created this once.
+        var key:Int = haxe.crypto.Crc32.make(Bytes.ofString(id));
         return key % connections.length;
     }
 
@@ -37,15 +38,15 @@ class Memcache
         this.connections = new Array();
         for( i in 0...hosts.length) {
             var values = hosts[i].split(":");
-            this.connections.push( new MemcacheSocket( 
-                                   values[0],
-                                   ( values.length >= 2 ? Std.parseInt(values[1]) : null ) ) );
+            this.connections.push( new MemcacheSocket ( 
+                                        values[0],
+                                        ( values.length >= 2 ? Std.parseInt(values[1]) : null )
+                                  )
+                            );
         }
     }
 
-    private function _do( cmd, id, flags, document
-        // prolly need to pass in a handler
-     ){
+    private function _do( cmd, id, flags, document ){
         var hostIndex = idToIndex(id);
         var connection = connections[hostIndex];
         connection.send( cmd, id, flags, document );
