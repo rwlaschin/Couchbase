@@ -35,8 +35,7 @@ class ProtocolHandler {
     public function get_length() { return length; }
     public function get_data() { return data; }
 
-    public function new():Void {
-
+    public function new(debug:Bool=false):Void {
     }
 
     public function initialize(socket:sys.net.Socket):Void {
@@ -59,7 +58,7 @@ class ProtocolHandler {
 
     public function readType(): Void {
         var response:String = socket.input.readLine();
-        trace( 'Read - ' + Std.string(response) );
+        // dtrace( 'Read - ' + Std.string(response) );
         var fields:Array<String> = response.split(" ");
         for( i in 0...fields.length) {
             var value:String = fields[i];
@@ -79,8 +78,8 @@ class ProtocolHandler {
         data = socket.input.readString(length);
         socket.input.readLine(); // eat ending '\r\n'
         var end:String = socket.input.readLine(); // close line
-        trace( 'Read ('+length+') - ' + Std.string(data) );
-        trace( 'Read - ' + Std.string(end) );
+        // dtrace( 'Read ('+length+') - ' + Std.string(data) );
+        // dtrace( 'Read - ' + Std.string(end) );
         state = end;
     }
 }
@@ -117,7 +116,7 @@ class MemcacheSocket {
         try {
             socket.close();
         } catch (e:String) {
-            trace(e);
+            throw e;
         }
     }
 
@@ -161,7 +160,7 @@ class MemcacheSocket {
                     message += ( noreply  ? "noreply " : "" );
             }
 
-            trace(message + " " + encoded);
+            // dtrace(message + " " + encoded);
 
             // TODO: Add failure handling/retries
             socket.output.writeString( message + "\r\n" );
@@ -171,7 +170,7 @@ class MemcacheSocket {
             }
             socket.output.flush();
         } catch (e:Dynamic) {
-            trace(Std.string(e));
+            throw e;
         }
     }
 
