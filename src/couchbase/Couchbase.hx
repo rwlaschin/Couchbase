@@ -6,6 +6,25 @@ import couchbase.CouchbaseSocket;
 import haxe.Json;
 import Math;
 
+class CouchbaseConfig {
+     public var persistent(default,default):Bool;
+     public var persist_to(default,default):Int;
+     public var replicate_to(default,default):Int;
+     public var expiry(default,default):Int;
+
+     public function get_persistent():Bool { return persistent; }
+     public function get_persist_to():Int { return persist_to; }
+     public function get_replicate_to():Int { return replicate_to; }
+     public function get_expiry():Int { return expiry; }
+
+     public function new(persist_to:Int=0,replicate_to:Int=0,expiry:Int=0,persistent:Bool=false ){
+        this.persist_to = persist_to;
+        this.replicate_to = replicate_to;
+        this.expiry = expiry;
+        this.persistent = persistent;
+     }
+}
+
 /**
  * A class representing a connection to a Couchbase bucket.
  */
@@ -16,12 +35,11 @@ class Couchbase {
     private var user:String;
     private var password:String;
     private var bucket:String;
-    private var persistent:Bool;
+    private var config:CouchbaseConfig;
     static inline var port:Int = 8091; // default port
 
     /**
-     * Constructs a new instance of a Couchbase object.
-     *
+     * Constructs a new instance of a Couchbase
      * @param array An array of hostnames[:port] where the
 <pre><code>                Couchbase cluster is running. The port number is
                 optional (and only needed if you're using a non-
@@ -33,12 +51,19 @@ class Couchbase {
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  persistent:Bool ){
+    public function new ( hosts:Array<String>,  user:String,  password:String,  bucket:String,  config:CouchbaseConfig=null ){
+        if( config == null ) {
+            config = new CouchbaseConfig();
+        }
         this.user = user;
         this.password = password;
         this.bucket = bucket;
-        this.persistent = persistent;
         this.connections = new Array();
+
+        // open a connection
+        // get the mapping table
+        // close the connection
+        // store the table
 
         for( i in 0...hosts.length) {
             var hostinfo = hosts[i].split(':');
@@ -52,12 +77,7 @@ class Couchbase {
             }
         }
 
-        // there are two interfaces, management interface and the command interface
-
-        // open a connection
-        // get the mapping table
-        // close the connection
-        // store the table
+        this.config = config;
     }
 
     /**
@@ -73,7 +93,7 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function add ( id:String,  document:Dynamic,  expiry:Int,  persist_to:Int,  replicate_to:Int ):String {
+    function add ( id:String,  document:Dynamic, ?expiry:Null<Int> ):String {
         return "";
     }
 
