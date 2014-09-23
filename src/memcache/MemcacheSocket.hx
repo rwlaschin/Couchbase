@@ -109,7 +109,7 @@ class MemcacheSocket {
         try {
             socket.connect( _host.ip, _host.port );
         } catch (e:Dynamic) {
-            trace( Std.string(e) );
+            throw e;
         }
     }
 

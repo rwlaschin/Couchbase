@@ -42,7 +42,7 @@ class Test{
 		try { // Test, good host name
 			con = new CouchbaseSocket("localhost");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Passed");
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
@@ -50,7 +50,7 @@ class Test{
 		try { // Test, good ip 
 			con = new CouchbaseSocket("127.0.0.1");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Passed");
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
@@ -60,7 +60,7 @@ class Test{
 			var resp = con.stats();
 			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Passed Exception - " + Std.string( e ) );
+			trace( "Passed");
 		}
 
 		try { // Test, bad port
@@ -68,7 +68,7 @@ class Test{
 			var resp = con.stats();
 			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Passed Exception - " + Std.string( e ) );
+			trace( "Passed");
 		}
 
 		try {
@@ -118,9 +118,12 @@ class Test{
 						case "delete": con.send(cmd,testInfo.key);
 					}
 					var response = con.read();
-					trace( "Expected - " + Std.string( result ) );
-					trace( "Received - " + Std.string( response ) );
-					trace( ( Std.string( result ) == Std.string( response ) ) ? "Passed" : "Failed" );
+					var passed:Bool = ( Std.string( result ) == Std.string( response ) );
+					if( passed == false ) {
+						trace( "Expected - " + Std.string( result ) );
+						trace( "Received - " + Std.string( response ) );
+					}
+					trace( passed ? "Passed" : "Failed" );
 				}
 			}
 			
@@ -143,7 +146,7 @@ class Test{
 		try { // Test, good host name
 			con = new MemcacheSocket("localhost");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Passed");
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
@@ -151,7 +154,7 @@ class Test{
 		try { // Test, good ip 
 			con = new MemcacheSocket("127.0.0.1");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Passed");
 		} catch (e:Dynamic) {
 			trace( "Failed - " + Std.string( e ) );
 		}
@@ -159,17 +162,17 @@ class Test{
 		try { // Test, bad host
 			con = new MemcacheSocket("foonuggets");
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed Exception - " + Std.string( e ) );
 		}
 
 		try { // Test, bad port
 			con = new MemcacheSocket("localhost",10001);
 			var resp = con.stats();
-			trace( "Passed - " + Std.string(resp) );
+			trace( "Failed - " + Std.string(resp) );
 		} catch (e:Dynamic) {
-			trace( "Expected Exception - " + Std.string( e ) );
+			trace( "Passed Exception - " + Std.string( e ) );
 		}
 
 		try {
@@ -206,9 +209,12 @@ class Test{
 						case "delete": con.send(cmd,testInfo.key);
 					}
 					var response = con.read();
-					trace( "Expected - " + Std.string( result ) );
-					trace( "Received - " + Std.string( response ) );
-					trace( ( Std.string( result ) == Std.string( response ) ) ? "Passed" : "Failed" );
+					var passed = ( Std.string( result ) == Std.string( response ) );
+					if( passed == false ) {
+						trace( "Expected - " + Std.string( result ) );
+						trace( "Received - " + Std.string( response ) );
+					}
+					trace( passed  ? "Passed" : "Failed" );
 				}
 			}
 			
