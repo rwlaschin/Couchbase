@@ -12,6 +12,9 @@ import memcache.MemcacheSocket;
 import couchbase.Couchbase;
 import memcache.Memcache;
 
+import couchbase.Couchbase.CouchbaseConfig;
+
+
 class Test{
 	static function main(){
 		Test.MemcacheSocketTest();
@@ -22,16 +25,67 @@ class Test{
 	}
 
 	static function CouchbaseTest() {
-		/*
-			var cb = new Couchbase(['localhost'],"user","password","default",false);
-			trace(CouchbaseConst.COUCHBASE_SUCCESS);
-			var cb = new Couchbase(['localhost:8091'],"user","password","default",false);
-			trace(CouchbaseConst.COUCHBASE_SUCCESS);
-			var cb = new Couchbase(['127.0.0.1'],"user","password","default",false);
-			trace(CouchbaseConst.COUCHBASE_SUCCESS);
-			var cb = new Couchbase(['127.0.0.1:8091'],"user","password","default",false);
-			trace(CouchbaseConst.COUCHBASE_SUCCESS);
-		*/
+		var con:Couchbase;
+		try {
+			var mixed1:Array<Dynamic> = ["STORED", ["This is the data I'm storing"] ];
+			var mixed2:Array<Dynamic> = ["NOT_STORED","STORED", { msg : "This is the data I'm storing" },"DELETED"];
+			var mixed3:Array<Dynamic> = ["STORED", 100000, 'DELETED' ];
+			var data:Array<Dynamic> = [
+				{ key : "cb_mynewnumber",
+				  value : 100000, 
+				  result : mixed3,
+				  cmd : [ 'add', 'get', 'delete' ] 
+				},
+				{ key : "cb_mynewstring",
+				  value : "This is the data I'm storing", 
+				  result : ["STORED", "This is the data I'm storing", 'DELETED' ],
+				  cmd : [ 'add', 'get', 'delete' ] 
+				},
+				{ key : "cb_mynewjson",
+				  value : ["This is the data I'm storing"], 
+				  result : mixed1,
+				  cmd : [ 'add', 'get' ] 
+				},
+				{ key : "cb_mynewjson",
+				  value : { msg : "This is the data I'm storing" }, 
+				  result : mixed2,
+				  cmd : [ 'add', 'set', 'get', 'delete' ]
+				}
+			];
+
+			// command list: add, set, get, delete
+			//               replace, cas, gets(for cas value)
+
+			con = new Couchbase(["localhost"], "admin","aceace","test",new CouchbaseConfig());
+			for( i in 0...data.length ) {
+				var testInfo:Dynamic = data[i];
+				var cmds:Array<String> = testInfo.cmd;
+				var results:Array<String> = testInfo.result;
+				for(j in 0...cmds.length ) {
+					var response:Dynamic;
+					var cmd:String = cmds[j];
+					var result:String = results[j];
+					trace( "Test <"+ testInfo.key +"> - cmd <"+ cmd +">" );
+					switch( cmd ) {
+						case "add": response = con.add(testInfo.key,testInfo.value);
+						case "set": response = con.set(testInfo.key,testInfo.value);
+						case "replace": response = con.replace(testInfo.key,testInfo.value);
+						case "get": response = con.get(testInfo.key);
+						case "delete": response = con.delete(testInfo.key);
+						default: response = "Error: <" + cmd + "> not Supported, yet";
+					}
+					var passed:Bool = ( Std.string( result ) == Std.string( response ) );
+					if( passed == false ) {
+						trace( "Expected - " + Std.string( result ) );
+						trace( "Received - " + Std.string( response ) );
+					}
+					trace( passed ? "Passed" : "Failed" );
+				}
+			}
+			
+		} catch ( e:Dynamic ) {
+			trace( Std.string(e) );
+		}
 	}
 
 	static function CouchbaseSocketTest() {

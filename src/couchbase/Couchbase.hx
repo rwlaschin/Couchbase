@@ -3,6 +3,8 @@ package couchbase;
 import couchbase.CouchbaseConst;
 import couchbase.CouchbaseSocket;
 
+import haxe.crypto.Crc32;
+import haxe.io.Bytes;
 import haxe.Json;
 import Math;
 
@@ -30,8 +32,7 @@ class CouchbaseConfig {
  */
 class Couchbase {
 
-    private var sockets:Array<sys.net.Socket>;
-    private var connections:Array<Dynamic>;
+    private var connections:Array<CouchbaseSocket>;
     private var user:String;
     private var password:String;
     private var bucket:String;
@@ -70,7 +71,7 @@ class Couchbase {
             var host = hostinfo[0];
             var port = hostinfo.length >= 2 ? Std.parseInt(hostinfo[1]) : null;
             try {
-                var con = new CouchbaseSocket( host, port);
+                var con:CouchbaseSocket = new CouchbaseSocket( host, port);
                 connections.push( con );
             } catch (e:Dynamic) {
                 trace( "Error connecting to <"+host+( port==null ? ":"+port : "" )+">");
@@ -78,6 +79,21 @@ class Couchbase {
         }
 
         this.config = config;
+    }
+
+    // Overload this for a better indexing algo
+    private function idToIndex( id: String ) : Int {
+        // If I put this in a hash I can quick look up to see
+        // if I've already created this once.
+        var key:Int = haxe.crypto.Crc32.make(Bytes.ofString(id));
+        return key % connections.length;
+    }
+
+    private function _do( cmd:String, id:String, document:Dynamic='', expiry:Int=0, cas:Int=0, flags:Int=0 ){
+        var hostIndex = idToIndex(id);
+        var connection = connections[hostIndex];
+        connection.send( cmd, id, document, expiry );
+        return connection.read();
     }
 
     /**
@@ -93,8 +109,8 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function add ( id:String,  document:Dynamic, ?expiry:Null<Int> ):String {
-        return "";
+    public function add ( id:String,  document:Dynamic, expiry:Int=0 ):String {
+        return _do( 'add', id, document, expiry );
     }
 
     /**
@@ -111,7 +127,9 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function set ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
+    public function set ( id:String, document:Dynamic, expiry:Int=0, cas:Int=0):String { 
+        return _do( 'set', id, document, expiry ); 
+    }
 
     /**
      * Store multiple documents in the cluster.
@@ -141,7 +159,9 @@ class Couchbase {
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function replace ( id:String,  document:Dynamic,  expiry:Int,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
+    public function replace ( id:String, document:Dynamic, expiry:Int=0, cas:Int=0):String { 
+        return _do( 'replace', id, document, expiry );
+    }
 
     /**
      * Prepend a document to another document.
@@ -195,7 +215,9 @@ class Couchbase {
      * @return object The document from the cluster
      * @throws \CouchbaseException if an error occurs
      */
-    function get ( id:String,  callback:Void->Void,  cas:String ):Dynamic { return {}; }
+    public function get ( id:String, cas:Int = 0 ):Dynamic { 
+        return _do( 'get', id ); 
+    }
 
     /**
      * Retrieve multiple documents from the cluster.
@@ -311,7 +333,9 @@ value configured on the server).
      * @return string the cas value representing the delete document if success
      * @throws \CouchbaseException if an error occurs
      */
-    function delete ( id:String,  cas:String,  persist_to:Int,  replicate_to:Int ):String { return ""; }
+    public function delete ( id:String, cas:Int = 0 ):String { 
+        return _do( 'delete', id );
+    }
 
     /**
      * Increment a numeric value in the cluster.
@@ -411,7 +435,9 @@ value configured on the server).
      * @return array an array containing all "key" =&amp;gt; "value" pairs upon success
      * @throws \CouchbaseException if an error occurs
      */
-    function getStats ( ):Array<Dynamic> { return []; }
+    public function getStats ( ):Array<Dynamic> { 
+        return connections[0].stats( );
+    }
 
     /**
      * Get the last result code from the extension internals.

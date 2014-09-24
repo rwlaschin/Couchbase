@@ -66,7 +66,7 @@ class Memcache
      * @return string the cas value of the object if success
      * @throws \CouchbaseException if an error occurs
      */
-    function add ( id:String, document:Dynamic, expiry:Int ):String {
+    function add ( id:String, document:Dynamic, expiry:Int=0 ):String {
         return _do( 'add', id, 0, document );
     }
 

@@ -133,14 +133,12 @@ class MemcacheSocket {
 
     public function send( command:String,
                            key:String, data:Dynamic = '', expire:Int = 0,
-                           flags:Int = 0, cas:Null<Int> = null, noreply:Bool=false ):Void {
+                           flags:Int = 0, cas:Int = 0, noreply:Bool=false ):Void {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
 
         try {
 
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
-            if( cas == null ) { cas = 0; }
-
             var encoded:String = this.encode(data);
             /*var byteOutput:BytesOutput = new BytesOutput();
             byteOutput.writeString( encoded );
