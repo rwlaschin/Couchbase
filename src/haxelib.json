@@ -5,16 +5,11 @@
   "license": "GPL",
   "tags": ["couchbase","memcache"],
   "description":
-      "Couchbase api implementation",
-  "version": "0.0.0",
+      "Couchbase/Memcache API implementation",
+  "version": "0.0.1",
   "releasenote":
-      "Initial release, everything is working
-        correctly",
+      "Alpha release, memcache client drop-in",
   "contributors": ["martamius","rwlaschin"],
   "dependencies": {
-    "io.Bytes" : "",
-    "Json":"",
-    "nme": "3.5.5"
-    "sys.net.Socket":"",
   }
 }
