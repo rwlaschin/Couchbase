@@ -12,47 +12,47 @@ CouchbaseConfig
 - Couchbase interface and configuration
 
 Example
+-------
+	import couchbase.CouchbaseConfig;
+	import couchbase.Couchbase;
 
-import couchbase.CouchbaseConfig;
-import couchbase.Couchbase;
-
-var cconf:CouchbaseConfig = new CouchbaseConfig();
-con = new Couchbase(["localhost"], // list of couchbase hosts 
-					"user", // username
-					"passwd", // password
-					"test", // bucket name
-					cconf // configuration settings
-				);
+	var cconf:CouchbaseConfig = new CouchbaseConfig();
+	con = new Couchbase(["localhost"], // list of couchbase hosts 
+						"user", // username
+						"passwd", // password
+						"test", // bucket name
+						cconf // configuration settings
+					);
 
 
 Couchbase.add( key:String, value:Dynamic ):String
-response = con.add("mykey","My value");
+	response = con.add("mykey","My value");
 
 Couchbase.set( key:String, value:Dynamic ):String
-response = con.set("mykey","My value");
+	response = con.set("mykey","My value");
 
 Couchbase.replace( key:String, value:Dynamic ):String
-response = con.replace("mykey","My value");
+	response = con.replace("mykey","My value");
 
 Couchbase.get( key:String ):Dynamic
-response = con.get("mykey");
+	response = con.get("mykey");
 
 Couchbase.delete( key:String ):String
-response = con.delete("mykey");
+	response = con.delete("mykey");
 
 Memcache
 MemcacheConfig
 - Memcache interface and configuration
 
 Example
+-------
+	import memcache.MemcacheConfig;
+	import memcache.Memcache;
 
-import memcache.MemcacheConfig;
-import memcache.Memcache;
-
-var mconf:MemcacheConfig =  new MemcacheConfig();
-var cb = new Memcache(['localhost'], // host list
-                      mconf  // config
-                    );
+	var mconf:MemcacheConfig =  new MemcacheConfig();
+	var cb = new Memcache(['localhost'], // host list
+	                      mconf  // config
+	                    );
 
 <TBD>
 
@@ -61,42 +61,42 @@ Codec
 - By default Memcache uses CodecToString, and Couchbase uses CodecToJson
 
 Example
+-------
+	import memcache.codec.*;
 
-import memcache.codec.*;
+	var cdec:Codec = new CodecToString();
+	var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
 
-var cdec:Codec = new CodecToString();
-var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
-
-var cdec:Codec = new CodecToJson();
-var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
+	var cdec:Codec = new CodecToJson();
+	var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
 
 
-Custom Codec -
+Custom Codec
+------------
+	import tjson.TJSON;
 
-import tjson.TJSON;
+	class CodecToTJSON implements memcache.codec.Codec
+	{
+		public var codec:Int;
 
-class CodecToTJSON implements memcache.codec.Codec
-{
-	public var codec:Int;
+		public function new():Void {
+	        codec = 2;
+	    }
 
-	public function new():Void {
-        codec = 2;
-    }
+	    public function encode( data:Dynamic, flags:{flag:Int} ):String {
+	        flags.flag = codec;
+	        return TJSON.encode(data);
+	    }
 
-    public function encode( data:Dynamic, flags:{flag:Int} ):String {
-        flags.flag = codec;
-        return TJSON.encode(data);
-    }
+	    public function decode( data:String, flags:{flag:Int} ):Dynamic {
+	        if( flags.flag != codec ) {
+	            throw "Expecting codec conversion flag of "+codec + " <"+flags.flag+">";
+	        }
+	        return TJSON.parse(data);
+	    }
+	}
 
-    public function decode( data:String, flags:{flag:Int} ):Dynamic {
-        if( flags.flag != codec ) {
-            throw "Expecting codec conversion flag of "+codec + " <"+flags.flag+">";
-        }
-        return TJSON.parse(data);
-    }
-}
-
-var cdec:Codec = new CodecToTJSON();
-var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
+	var cdec:Codec = new CodecToTJSON();
+	var cconf:CouchbaseConfig = CouchbaseConfig(cdec);
 
 --- More to come ---
