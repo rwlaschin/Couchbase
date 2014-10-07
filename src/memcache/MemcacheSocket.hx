@@ -26,7 +26,7 @@ class ProtocolHandler {
     public var data(default,default):String;
     public var type(default,default):String;
     public var key(default,default):String;
-    public var flags(default,default):String;
+    public var flags(default,default):Int;
     public var cas(default,default):Int;
     public var length(default,default):Int;
 
@@ -127,15 +127,7 @@ class MemcacheSocket {
             throw e;
         }
     }
-/*
-    private function encode( data:Dynamic ):String {
-        return Std.string(data);
-    }
 
-    private function decode( data:String ):Dynamic {
-        return Std.string(data);
-    }
-*/
     // http://docs.couchbase.com/couchbase-devguide-2.0/#performing-basic-telnet-operations
     // http://docs.couchbase.com/couchbase-manual-2.0/#testing-couchbase-server-using-telnet
 
@@ -147,7 +139,7 @@ class MemcacheSocket {
         try {
 
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
-            var flags = {flags:0};
+            var flags = {flag:-1};
             var encoded:String = this.codec.encode(data,flags);
             /*var byteOutput:BytesOutput = new BytesOutput();
             byteOutput.writeString( encoded );
@@ -185,6 +177,9 @@ class MemcacheSocket {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
         protocolHandler.read();
         var flags = {flag:protocolHandler.flags};
+        if( flags.flag == null ) {
+            return protocolHandler.data; // error
+        }
         return this.codec.decode(protocolHandler.data,flags);
     }
 

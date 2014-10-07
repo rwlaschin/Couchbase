@@ -54,7 +54,7 @@ class Memcache
             this.connections.push( new MemcacheSocket ( 
                                         values[0],
                                         ( values.length >= 2 ? Std.parseInt(values[1]) : null )
-                                  ), config.codec
+                                   ,config.codec)
                             );
         }
     }
