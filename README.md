@@ -7,8 +7,8 @@ Alpha release, implements rudimentary features: add, get, set, replace, delete
 Primary focus is getting the couchbase interface working, memcache will be updated
 in parallel
 
-Couchbase
-CouchbaseConfig
+Couchbase/CouchbaseConfig
+-------------------------
 - Couchbase interface and configuration
 
 Example
@@ -26,22 +26,28 @@ Example
 
 
 Couchbase.add( key:String, value:Dynamic ):String
+
 	response = con.add("mykey","My value");
 
 Couchbase.set( key:String, value:Dynamic ):String
+
 	response = con.set("mykey","My value");
 
 Couchbase.replace( key:String, value:Dynamic ):String
+
 	response = con.replace("mykey","My value");
 
 Couchbase.get( key:String ):Dynamic
+
 	response = con.get("mykey");
 
 Couchbase.delete( key:String ):String
+
 	response = con.delete("mykey");
 
-Memcache
-MemcacheConfig
+Memcache/MemcacheConfig
+-----------------------
+
 - Memcache interface and configuration
 
 Example
