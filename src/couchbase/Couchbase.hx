@@ -23,6 +23,7 @@ class CouchbaseConfig extends MemcacheConfig {
      public function get_expiry():Int { return expiry; }
 
      public function new(codec:Codec=null,persist_to:Int=0,replicate_to:Int=0,expiry:Int=0,persistent:Bool=false ){
+trace("Creating couchbase config");
         super(codec == null ? new CodecToJson() : codec );
         this.persist_to = persist_to;
         this.replicate_to = replicate_to;
@@ -75,7 +76,7 @@ class Couchbase {
             var host = hostinfo[0];
             var port = hostinfo.length >= 2 ? Std.parseInt(hostinfo[1]) : null;
             try {
-                var con:CouchbaseSocket = new CouchbaseSocket( host, port);
+                var con:CouchbaseSocket = new CouchbaseSocket( host, port, config.codec );
                 connections.push( con );
             } catch (e:Dynamic) {
                 trace( "Error connecting to <"+host+( port==null ? ":"+port : "" )+">");

@@ -5,7 +5,9 @@ class CodecToJson implements memcache.codec.Codec
 {
     public var codec:Int;
 
-    public function new() {codec = 1;}
+    public function new() {
+        codec = 1;
+    }
 
     public function encode( data:Dynamic, flags:{flag:Int} ):String {
         flags.flag = codec;
