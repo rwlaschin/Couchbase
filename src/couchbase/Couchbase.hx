@@ -8,7 +8,7 @@ import haxe.io.Bytes;
 import haxe.Json;
 import Math;
 
-class CouchbaseConfig {
+class CouchbaseConfig extends MemcacheConfig {
      public var persistent(default,default):Bool;
      public var persist_to(default,default):Int;
      public var replicate_to(default,default):Int;
@@ -19,7 +19,8 @@ class CouchbaseConfig {
      public function get_replicate_to():Int { return replicate_to; }
      public function get_expiry():Int { return expiry; }
 
-     public function new(persist_to:Int=0,replicate_to:Int=0,expiry:Int=0,persistent:Bool=false ){
+     public function new(codec:Codec=null,persist_to:Int=0,replicate_to:Int=0,expiry:Int=0,persistent:Bool=false ){
+        super(codec == null ?  : );
         this.persist_to = persist_to;
         this.replicate_to = replicate_to;
         this.expiry = expiry;

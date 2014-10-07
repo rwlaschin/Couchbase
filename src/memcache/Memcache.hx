@@ -2,11 +2,21 @@
 package memcache;
 
 import memcache.MemcacheSocket;
+import memcache.codec.Codec;
 
 import haxe.crypto.Crc32;
 import haxe.io.Bytes;
 import haxe.Utf8;
 import Math;
+
+class MemcacheConfig {
+
+    public var codec:Codec;
+    
+    public function new(codec:Codec = null){
+        this.codec = codec;
+    }
+}
 
 class Memcache
 {
@@ -34,14 +44,17 @@ class Memcache
      * @param string The name of the bucket to connect to
      * @param boolean If a persistent object should be used or not
      */
-    public function new ( hosts:Array<String> ){
+    public function new ( hosts:Array<String>, config:MemcacheConfig=null ){
+        if( config == null ) {
+            config = new MemcacheConfig();
+        }
         this.connections = new Array();
         for( i in 0...hosts.length) {
             var values = hosts[i].split(":");
             this.connections.push( new MemcacheSocket ( 
                                         values[0],
                                         ( values.length >= 2 ? Std.parseInt(values[1]) : null )
-                                  )
+                                  ), config.codec
                             );
         }
     }

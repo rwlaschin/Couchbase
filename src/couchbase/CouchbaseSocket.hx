@@ -13,7 +13,7 @@ class CouchbaseSocket extends MemcacheSocket
 	public function new( host:String, ?port:Null<Int> = null ) {
 		super( host, port );
 	}
-
+/*
 	private override function encode( data:Dynamic ):String {
 		return Json.stringify(data);
 	}
@@ -22,5 +22,5 @@ class CouchbaseSocket extends MemcacheSocket
 		try { return Json.parse(data); }
 		catch (e:Dynamic) { return data; }
 	}
-
+*/
 }

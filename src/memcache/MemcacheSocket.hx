@@ -2,6 +2,8 @@
 package memcache;
 
 import sys.net.Socket;
+import memcache.codec.Codec;
+import memcache.codec.CodecToString;
 
 class Host {
     public var ip(default,default) : sys.net.Host;
@@ -24,6 +26,7 @@ class ProtocolHandler {
     public var data(default,default):String;
     public var type(default,default):String;
     public var key(default,default):String;
+    public var flags(default,default):String;
     public var cas(default,default):Int;
     public var length(default,default):Int;
 
@@ -31,6 +34,7 @@ class ProtocolHandler {
 
     public function get_type() { return type; }
     public function get_key() { return key; }
+    public function get_flags() { return flags; }
     public function get_cas() { return cas; }
     public function get_length() { return length; }
     public function get_data() { return data; }
@@ -66,8 +70,9 @@ class ProtocolHandler {
                 case 0: type = value;
                         data = value; // for errors there is only 1 field this will setup the data properly
                 case 1: key = value;
-                case 2: cas = Std.parseInt(value);
+                case 2: flags = Std.parseInt(value);
                 case 3: length = Std.parseInt(value);
+                case 4: cas = Std.parseInt(value);
             }
         }
         state = type;
@@ -88,10 +93,11 @@ class MemcacheSocket {
     private var defaultPort:Int = 11211;
     private var socket:sys.net.Socket = null;
     private var protocolHandler: ProtocolHandler = null;
+    private var codec: Codec = null;
 
     private var _host:Host;
 
-    public function new( host:String, _port:Null<Int> = null, handler:ProtocolHandler=null ) {
+    public function new( host:String, _port:Null<Int> = null, handler:ProtocolHandler=null, codec:Codec=null ) {
         this._host = new Host (
                         host,
                         (_port != null ? _port : defaultPort)
@@ -100,6 +106,8 @@ class MemcacheSocket {
 
         protocolHandler = ( handler == null ) ? new ProtocolHandler() : handler ;
         protocolHandler.initialize(this.socket);
+
+        this.codec = ( codec == null ) ? new CodecToString() : codec ;
 
         open();
     }
@@ -119,7 +127,7 @@ class MemcacheSocket {
             throw e;
         }
     }
-
+/*
     private function encode( data:Dynamic ):String {
         return Std.string(data);
     }
@@ -127,7 +135,7 @@ class MemcacheSocket {
     private function decode( data:String ):Dynamic {
         return Std.string(data);
     }
-
+*/
     // http://docs.couchbase.com/couchbase-devguide-2.0/#performing-basic-telnet-operations
     // http://docs.couchbase.com/couchbase-manual-2.0/#testing-couchbase-server-using-telnet
 
@@ -139,7 +147,8 @@ class MemcacheSocket {
         try {
 
             // <command name> <key> <flags> <exptime> <bytes> <cas> [noreply] <b:datablock>\r\n
-            var encoded:String = this.encode(data);
+            var flags = {flags:0};
+            var encoded:String = this.codec.encode(data,flags);
             /*var byteOutput:BytesOutput = new BytesOutput();
             byteOutput.writeString( encoded );
             var bytes = byteOutput.getBytes();*/
@@ -151,7 +160,7 @@ class MemcacheSocket {
                     data = '';
                 default:
                     message += key + " ";
-                    message += flags + " "; // this can be used to communicate the storage type
+                    message += flags.flag + " "; // this can be used to communicate the storage type
                     message += expire + " ";
                     message += encoded.length + " ";
                     message += cas + " ";
@@ -175,7 +184,8 @@ class MemcacheSocket {
     public function read():String {
         // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
         protocolHandler.read();
-        return this.decode(protocolHandler.data);
+        var flags = {flag:protocolHandler.flags};
+        return this.codec.decode(protocolHandler.data,flags);
     }
 
     public function stats( cmd:String='' ):Array<String> {
