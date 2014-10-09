@@ -1,7 +1,7 @@
 {
   "name": "couchbase",
   "url" :
-      "https://github.com/rwlaschin/HaxeCouch",
+      "https://github.com/rwlaschin/Couchbase",
   "license": "GPL",
   "tags": ["couchbase","memcache"],
   "description":

@@ -51,6 +51,12 @@ class Test{
 				  result : mixed2,
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
 				}
+				,
+				{ key : "cb_DoesntExist",
+				  value : null, 
+				  result : [null],
+				  cmd : ['get' ]
+				}
 			];
 
 			// command list: add, set, get, delete
