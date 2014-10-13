@@ -6,9 +6,9 @@
   "tags": ["couchbase","memcache"],
   "description":
       "Couchbase/Memcache API implementation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "releasenote":
-      "Alpha release, memcache client drop-in",
+      "Altered return value of 'get' when key is missing",
   "contributors": ["martamius","rwlaschin"],
   "dependencies": {
   }

@@ -1,6 +1,5 @@
 rm -rf haxelib
-mkdir haxelib
-mkdir haxelib/couchbase
+mkdir -p haxelib/couchbase
 cp -r src/* haxelib/couchbase
 
 cd haxelib
