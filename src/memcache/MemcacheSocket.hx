@@ -68,7 +68,9 @@ class ProtocolHandler {
             var value:String = fields[i];
             switch(i){
                 case 0: type = value;
-                        data = value; // for errors there is only 1 field this will setup the data properly
+                        // for errors there is only 1 field this will setup the data properly
+                        if( type == "END") { data = null; } 
+                        else { data = value; }
                 case 1: key = value;
                 case 2: flags = Std.parseInt(value);
                 case 3: length = Std.parseInt(value);

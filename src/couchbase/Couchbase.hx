@@ -23,7 +23,6 @@ class CouchbaseConfig extends MemcacheConfig {
      public function get_expiry():Int { return expiry; }
 
      public function new(codec:Codec=null,persist_to:Int=0,replicate_to:Int=0,expiry:Int=0,persistent:Bool=false ){
-trace("Creating couchbase config");
         super(codec == null ? new CodecToJson() : codec );
         this.persist_to = persist_to;
         this.replicate_to = replicate_to;

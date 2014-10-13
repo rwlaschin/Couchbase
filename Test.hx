@@ -50,8 +50,7 @@ class Test{
 				  value : { msg : "This is the data I'm storing" }, 
 				  result : mixed2,
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
-				}
-				,
+				},
 				{ key : "cb_DoesntExist",
 				  value : null, 
 				  result : [null],
@@ -98,7 +97,6 @@ class Test{
 		// create Socket
 		var con:CouchbaseSocket;
 		var resp;
-
 		try { // Test, good host name
 			con = new CouchbaseSocket("localhost");
 			var resp = con.stats();
@@ -130,7 +128,6 @@ class Test{
 		} catch (e:Dynamic) {
 			trace( "Passed");
 		}
-
 		try {
 			var mixed1:Array<Dynamic> = ["STORED", ["This is the data I'm storing"] ];
 			var mixed2:Array<Dynamic> = ["NOT_STORED","STORED", { msg : "This is the data I'm storing" },"DELETED"];
@@ -155,6 +152,11 @@ class Test{
 				  value : { msg : "This is the data I'm storing" }, 
 				  result : mixed2,
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
+				},
+				{ key : "cb_DoesntExist",
+				  value : null, 
+				  result : [null],
+				  cmd : ['get' ]
 				}
 			];
 
@@ -246,6 +248,11 @@ class Test{
 				  value : "This is the data I'm storing", 
 				  result : ["NOT_STORED","STORED","This is the data I'm storing","DELETED"], 
 				  cmd : [ 'add', 'set', 'get', 'delete' ]
+				},
+				{ key : "cb_DoesntExist",
+				  value : null, 
+				  result : [null],
+				  cmd : ['get' ]
 				}
 			];
 
