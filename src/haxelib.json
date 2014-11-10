@@ -6,9 +6,9 @@
   "tags": ["couchbase","memcache"],
   "description":
       "Couchbase/Memcache API implementation",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "releasenote":
-      "Altered return value of 'get' when key is missing",
+      "Added rest interface and bucket management",
   "contributors": ["martamius","rwlaschin"],
   "dependencies": {
   }
